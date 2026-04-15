@@ -47,3 +47,62 @@ The agent is scoped to Tier 1 customer support queries including:
 ---
 
 ## Repository Structure
+
+/customer-support-agent
+├── README.md                        ← Project overview (this file)
+├── system-prompt.md                 ← Core agent instructions and behavior rules
+├── knowledge-base/
+│   ├── faq-payments.md              ← Payment and purchase FAQ
+│   ├── faq-account-access.md        ← Login and account recovery FAQ
+│   └── escalation-rules.md         ← When and how to escalate
+├── sample-conversations/
+│   ├── payment-issue-example.md     ← Sample handled ticket
+│   └── escalation-example.md       ← Sample escalated ticket
+└── evaluation-criteria.md          ← KPIs used to measure agent performance
+
+---
+
+## Key Design Decisions
+
+**Tone:** The agent maintains a professional, empathetic tone at all 
+times. It does not speculate on issues outside its knowledge base.
+
+**Escalation-first on ambiguity:** When the agent cannot resolve an 
+issue with confidence, it escalates rather than guessing. This protects 
+player trust and reduces incorrect resolutions.
+
+**Multilingual consideration:** The agent is designed to handle queries 
+in English, with notes on how prompt design can be adapted for 
+multilingual team use.
+
+**Policy adherence:** The agent references only documented policies. 
+It does not make exceptions or promises outside defined parameters.
+
+---
+
+## Evaluation Criteria
+
+Success for this agent would be measured against:
+
+| Metric | Target |
+|---|---|
+| First Contact Resolution (FCR) | >75% on Tier 1 scope |
+| Average Handling Time (AHT) | Reduction vs. baseline |
+| Escalation Accuracy | <10% incorrect escalations |
+| Player Satisfaction (CSAT) | Maintained or improved vs. human Tier 1 |
+
+---
+
+## Author
+
+**Alexandros Alexakis**  
+Vendor Manager & L&D Lead | Player Care  
+Scorewarrior, Limassol, Cyprus  
+[LinkedIn](https://www.linkedin.com/in/YOUR-LINKEDIN-URL)
+
+---
+
+## Status
+
+Work in progress. System prompt and knowledge base files being added 
+iteratively.
