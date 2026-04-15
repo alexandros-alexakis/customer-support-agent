@@ -36,7 +36,7 @@ This template is used to produce the weekly support operations report for manage
 | First Contact Resolution (FCR) | >75% | | |
 | Average Handling Time (AHT) | Baseline | | |
 | Escalation Accuracy | >90% | | |
-| CSAT Score | Baseline | | |
+| CSAT Score | >80% | | |
 | Policy Compliance Rate | >95% | | |
 
 ---
@@ -80,6 +80,7 @@ Document any incidents that occurred during the reporting period:
 ## 6. Training and QA Highlights
 
 - QA score this week:
+- CSAT score this week:
 - Common failure pattern identified:
 - Training delivered this week:
 - Knowledge base updates made:
@@ -94,6 +95,7 @@ Anything management needs to be aware of for the coming week:
 - Staffing risks or gaps
 - Recurring issues not yet resolved at product level
 - Agent performance concerns
+- Any CSAT drop requiring attention
 
 ---
 
