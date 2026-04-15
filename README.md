@@ -1,5 +1,7 @@
 # Customer Support Agent - Claude AI (Gaming Support)
 
+![Project Banner](banner (1).png)
+
 ## Overview
 
 This project documents the design and implementation of an AI-powered customer support agent built using Claude AI (Anthropic). The agent is designed for Tier 1 gaming customer support operations, targeting common player issues in mobile/PC strategy games.
