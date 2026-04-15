@@ -43,7 +43,7 @@ Each ticket is scored using the standard QA framework.
 
 ### 3. Live Performance Review
 
-After passing the knowledge and practical assessments, agents handle live tickets under observation for one full shift. A QA review of 5 tickets from that shift must achieve an average of 75+.
+After passing the knowledge and practical assessments, agents handle live tickets under observation for one full shift. A QA review of 5 tickets from that shift must achieve an average of 75+. CSAT from that shift must be 80%+.
 
 ---
 
@@ -52,8 +52,19 @@ After passing the knowledge and practical assessments, agents handle live ticket
 | Level | Requirements | Permissions |
 |---|---|---|
 | Tier 1 Certified | Pass all three assessments | Handle full Tier 1 queue independently |
-| Senior Agent | 3 months at Tier 1 + consistent 85+ QA | Handle complex Tier 1, mentor new agents |
+| Senior Agent | 3 months at Tier 1 + consistent 85+ QA + CSAT >80% | Handle complex Tier 1, mentor new agents |
 | QA Reviewer | Senior Agent + QA training | Conduct QA reviews and calibration sessions |
+
+---
+
+## Month 1 Sign-Off Criteria
+
+| Criterion | Standard |
+|---|---|
+| QA score | 75+ consistently |
+| CSAT score | >80% |
+| Escalation accuracy | No incorrect escalations in final 2 weeks |
+| Policy compliance | Zero unauthorized promises or policy breaches in final 2 weeks |
 
 ---
 
@@ -62,4 +73,5 @@ After passing the knowledge and practical assessments, agents handle live ticket
 Agents must recertify annually or following:
 - A significant policy change
 - A QA score drop below 60 for two consecutive weeks
+- A CSAT score drop below 70% for two consecutive weeks
 - A return from extended leave (3+ months)
