@@ -1,6 +1,6 @@
 # Customer Support Agent - Claude AI (Gaming Support)
 
-![Project Banner](banner (1).png)
+![Project Banner](banner%20(1).png)
 
 ## Overview
 
