@@ -2,23 +2,15 @@
 
 ## Overview
 
-This project documents the design and implementation of an AI-powered 
-customer support agent built using Claude AI (Anthropic). The agent is 
-designed for Tier 1 gaming customer support operations, specifically 
-targeting common player issues in mobile/PC strategy games.
+This project documents the design and implementation of an AI-powered customer support agent built using Claude AI (Anthropic). The agent is designed for Tier 1 gaming customer support operations, targeting common player issues in mobile/PC strategy games.
 
-The goal is to reduce agent handling time on repetitive tickets, 
-improve response consistency across multilingual teams, and create a 
-scalable onboarding resource for new support agents.
+The goal is to reduce agent handling time on repetitive tickets, improve response consistency across multilingual teams, and create a scalable onboarding resource for new support agents.
 
 ---
 
 ## Problem Statement
 
-Customer support teams in gaming handle high volumes of repetitive 
-Tier 1 tickets: payment issues, account access, in-game bugs, and 
-general game mechanic questions. New agents require significant ramp-up 
-time, and response quality varies across team members and languages.
+Customer support teams in gaming handle high volumes of repetitive Tier 1 tickets: payment issues, account access, in-game bugs, and general game mechanic questions. New agents require significant ramp-up time, and response quality varies across team members and languages.
 
 An AI agent that handles or assists with Tier 1 queries can:
 - Reduce average handling time (AHT)
@@ -31,6 +23,7 @@ An AI agent that handles or assists with Tier 1 queries can:
 ## Agent Design
 
 ### Scope
+
 The agent is scoped to Tier 1 customer support queries including:
 - Payment and purchase issues
 - Account access and login problems
@@ -39,6 +32,7 @@ The agent is scoped to Tier 1 customer support queries including:
 - Escalation routing for issues outside Tier 1 scope
 
 ### Architecture
+
 - **Model:** Claude (Anthropic)
 - **Interface:** Claude.ai Projects (prototype stage)
 - **Knowledge base:** Structured FAQ documents uploaded as context
@@ -48,35 +42,28 @@ The agent is scoped to Tier 1 customer support queries including:
 
 ## Repository Structure
 
-/customer-support-agent
-├── README.md                        ← Project overview (this file)
-├── system-prompt.md                 ← Core agent instructions and behavior rules
-├── knowledge-base/
-│   ├── faq-payments.md              ← Payment and purchase FAQ
-│   ├── faq-account-access.md        ← Login and account recovery FAQ
-│   └── escalation-rules.md         ← When and how to escalate
-├── sample-conversations/
-│   ├── payment-issue-example.md     ← Sample handled ticket
-│   └── escalation-example.md       ← Sample escalated ticket
-└── evaluation-criteria.md          ← KPIs used to measure agent performance
+| File | Description |
+|---|---|
+| `README.md` | Project overview (this file) |
+| `system-prompt.md` | Core agent instructions and behavior rules |
+| `knowledge-base/faq-payments.md` | Payment and purchase FAQ |
+| `knowledge-base/faq-account-access.md` | Login and account recovery FAQ |
+| `knowledge-base/escalation-rules.md` | When and how to escalate |
+| `sample-conversations/payment-issue-example.md` | Sample handled ticket |
+| `sample-conversations/escalation-example.md` | Sample escalated ticket |
+| `evaluation-criteria.md` | KPIs used to measure agent performance |
 
 ---
 
 ## Key Design Decisions
 
-**Tone:** The agent maintains a professional, empathetic tone at all 
-times. It does not speculate on issues outside its knowledge base.
+**Tone:** The agent maintains a professional, empathetic tone at all times. It does not speculate on issues outside its knowledge base.
 
-**Escalation-first on ambiguity:** When the agent cannot resolve an 
-issue with confidence, it escalates rather than guessing. This protects 
-player trust and reduces incorrect resolutions.
+**Escalation-first on ambiguity:** When the agent cannot resolve an issue with confidence, it escalates rather than guessing. This protects player trust and reduces incorrect resolutions.
 
-**Multilingual consideration:** The agent is designed to handle queries 
-in English, with notes on how prompt design can be adapted for 
-multilingual team use.
+**Multilingual consideration:** The agent is designed to handle queries in English, with notes on how prompt design can be adapted for multilingual team use.
 
-**Policy adherence:** The agent references only documented policies. 
-It does not make exceptions or promises outside defined parameters.
+**Policy adherence:** The agent references only documented policies. It does not make exceptions or promises outside defined parameters.
 
 ---
 
@@ -95,14 +82,13 @@ Success for this agent would be measured against:
 
 ## Author
 
-**Alexandros Alexakis**  
-Vendor Manager & L&D Lead | Player Care  
-Scorewarrior, Limassol, Cyprus  
-[LinkedIn](https://www.linkedin.com/in/YOUR-LINKEDIN-URL)
+**Alexandros Alexakis**
+Vendor Manager & L&D Lead | Player Care
+Scorewarrior, Limassol, Cyprus
+[LinkedIn](https://www.linkedin.com/in/alexandros-alexakis/)
 
 ---
 
 ## Status
 
-Work in progress. System prompt and knowledge base files being added 
-iteratively.
+Work in progress. System prompt and knowledge base files being added iteratively.
