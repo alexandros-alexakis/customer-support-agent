@@ -29,15 +29,16 @@ This template is used for monthly and quarterly performance reviews. It combines
 | Average Handling Time | Baseline | | |
 | Escalation Accuracy | >90% | | |
 | Policy Compliance Rate | >95% | | |
+| CSAT Score | >80% | | |
 | Tickets handled per day | Team average | | |
 
 ### QA Trend
 
-| Month | QA Score | Band |
-|---|---|---|
-| Month 1 | | |
-| Month 2 | | |
-| Month 3 | | |
+| Month | QA Score | CSAT | Band |
+|---|---|---|---|
+| Month 1 | | | |
+| Month 2 | | | |
+| Month 3 | | | |
 
 ---
 
