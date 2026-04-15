@@ -2,75 +2,119 @@
 
 ## Overview
 
-This document defines the metrics used to evaluate the performance 
-of the Claude AI customer support agent. These criteria are based 
-on standard customer support KPIs adapted for an AI-assisted 
-Tier 1 operation in gaming support.
+This document defines the key performance indicators (KPIs) used 
+to measure the effectiveness of the AI customer support agent. 
+These metrics mirror the standards used to evaluate human Tier 1 
+agents in gaming support operations.
 
 ---
 
 ## Primary KPIs
 
-| Metric | Definition | Target |
-|---|---|---|
-| First Contact Resolution (FCR) | Percentage of tickets resolved at Tier 1 without escalation | >75% |
-| Average Handling Time (AHT) | Average time taken to resolve or escalate a ticket | Reduction vs. human baseline |
-| Escalation Accuracy | Percentage of escalations that were correctly routed | >90% |
-| Incorrect Escalation Rate | Tickets escalated unnecessarily or to wrong team | <10% |
-| Player Satisfaction (CSAT) | Post-interaction satisfaction score from players | Maintained or improved vs. human Tier 1 |
-| Policy Compliance Rate | Responses that correctly follow documented policies | >98% |
+### 1. First Contact Resolution (FCR)
+
+**Definition:** The percentage of tickets resolved without requiring 
+escalation or a follow-up contact from the player.
+
+**Target:** >75% for issues within Tier 1 scope
+
+**How to measure:**
+- Tag each conversation as resolved or escalated
+- Calculate: (Resolved tickets / Total tickets) x 100
+- Exclude out-of-scope tickets from the denominator
 
 ---
 
-## Secondary KPIs
+### 2. Average Handling Time (AHT)
 
-| Metric | Definition |
+**Definition:** The average time taken from first player message 
+to ticket closure or escalation.
+
+**Target:** Reduction vs. human Tier 1 baseline
+
+**How to measure:**
+- Record timestamp of first player message and ticket close
+- Calculate average across a sample of at least 50 tickets
+- Compare against human agent AHT benchmark
+
+---
+
+### 3. Escalation Accuracy
+
+**Definition:** The percentage of escalations that were correctly 
+routed to the right specialist team with sufficient information.
+
+**Target:** >90% correctly routed escalations
+
+**How to measure:**
+- Review escalated tickets with specialist teams weekly
+- Flag incorrectly routed or incomplete escalations
+- Calculate: (Correct escalations / Total escalations) x 100
+
+---
+
+### 4. Player Satisfaction (CSAT)
+
+**Definition:** Player-reported satisfaction score collected via 
+post-interaction survey.
+
+**Target:** Maintained or improved vs. human Tier 1 baseline
+
+**How to measure:**
+- Deploy a 1-5 star or thumbs up/down survey after ticket closure
+- Calculate average score across all rated interactions
+- Track weekly and flag drops of more than 0.3 points
+
+---
+
+### 5. Policy Compliance Rate
+
+**Definition:** The percentage of responses that correctly followed 
+defined policies (no unauthorized promises, correct escalation 
+triggers, appropriate tone).
+
+**Target:** >95%
+
+**How to measure:**
+- Conduct weekly QA review of a random sample of tickets (10%)
+- Score each ticket against the compliance checklist below
+- Calculate: (Compliant tickets / Reviewed tickets) x 100
+
+---
+
+## QA Compliance Checklist
+
+For each reviewed ticket, verify:
+
+| Check | Pass / Fail |
 |---|---|
-| Containment Rate | Percentage of contacts fully handled by agent without human involvement |
-| Repeat Contact Rate | Players who contact support again within 7 days on same issue |
-| Escalation Volume by Category | Breakdown of escalations by issue type to identify knowledge gaps |
-| Response Consistency Score | Degree to which similar queries receive consistent responses |
-
----
-
-## Evaluation Method
-
-### Phase 1 - Prompt Testing (Pre-deployment)
-- Run 50 simulated ticket scenarios covering all Tier 1 categories.
-- Evaluate each response against tone, accuracy, policy compliance, 
-  and escalation logic.
-- Identify gaps in the knowledge base or system prompt and iterate.
-
-### Phase 2 - Shadow Mode (Parallel running)
-- Run the agent alongside human agents on live tickets.
-- Compare agent responses to human responses on identical or similar issues.
-- Score against primary KPIs without exposing agent responses to players.
-
-### Phase 3 - Supervised Live Testing
-- Allow agent to handle a controlled volume of real tickets.
-- Human agent reviews all responses before they are sent.
-- Collect CSAT data and compare to human Tier 1 baseline.
-
-### Phase 4 - Independent Operation
-- Agent handles Tier 1 tickets autonomously within defined scope.
-- Human oversight maintained for escalations and edge cases.
-- Weekly KPI review to identify drift or degradation in performance.
-
----
-
-## Failure Conditions
-
-The agent should be reviewed and retrained if any of the following occur:
-
-- FCR drops below 65% for two consecutive weeks
-- Incorrect escalation rate exceeds 15%
-- CSAT drops more than 5 points below human Tier 1 baseline
-- Policy compliance rate drops below 95%
-- Any instance of the agent making commitments outside its defined scope
+| Agent did not ask for player password | |
+| Agent did not promise refunds or compensation without authorization | |
+| Agent escalated correctly when required | |
+| Agent collected required information before escalating | |
+| Tone was professional and empathetic throughout | |
+| Response was concise and clear | |
+| Player was informed of next steps | |
 
 ---
 
 ## Review Cadence
 
 | Review Type | Frequency |
-|
+|---|---|
+| KPI dashboard review | Weekly |
+| QA ticket sampling | Weekly |
+| Escalation accuracy audit | Weekly |
+| Full performance review | Monthly |
+
+---
+
+## Iteration Process
+
+When KPIs fall below target:
+
+1. Identify the ticket categories where failures occurred.
+2. Review whether the system prompt or FAQ content is insufficient.
+3. Update the relevant knowledge base file or system prompt rule.
+4. Re-test against the same ticket category.
+5. Document the change and the reason in the repository commit history.
