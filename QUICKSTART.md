@@ -1,115 +1,165 @@
 # Quickstart
 
-Get from clone to first successful run as fast as possible.
+Get from clone to a running agent in under 5 minutes.
 
 ---
 
-## Fastest path (recommended)
+## Fastest path
 
 **macOS / Linux:**
 ```bash
 git clone https://github.com/alexandros-alexakis/customer-support-agent.git
 cd customer-support-agent
 bash setup.sh
+source venv/bin/activate
+python run_agent.py --demo
 ```
 
-**Windows (Command Prompt - not PowerShell):**
+**Windows (Command Prompt):**
 ```
 git clone https://github.com/alexandros-alexakis/customer-support-agent.git
 cd customer-support-agent
 setup.bat
-```
-
-The setup script installs everything and prints exactly what to do next.
-
----
-
-## After setup: run the example
-
-Activate your virtual environment first:
-
-```bash
-# macOS / Linux
-source venv/bin/activate
-
-# Windows
 venv\Scripts\activate
+python run_agent.py --demo
 ```
 
-Then run:
-
-```bash
-python example_run.py
-```
-
-**You must activate the venv every time you open a new terminal.** If you see `ModuleNotFoundError`, this is why.
+**No API key needed.** The agent runs in mock mode by default - free, deterministic, no setup beyond installing dependencies.
 
 ---
 
-## Expected output
+## What `run_agent.py --demo` does
+
+Runs this message through the complete pipeline:
+
+```
+"I bought gems but they never showed up in my account."
+```
+
+And prints a full execution trace:
 
 ```
 ============================================================
-Player: player_001
-Message: I was charged $9.99 for coins but they never appeared...
-Contact count: 1 | VIP: False
+ PLAYER CARE AI - EXECUTION TRACE
+============================================================
+
+Run mode:            MOCK MODE (no API key - deterministic output, no cost)
+RAG context:         Not available (run: python rag/kb_sync.py)
+
 ------------------------------------------------------------
-Intent:      payment_issue (confidence: 0.857)
-Tone:        neutral
-Flags:       []
-Priority:    High (P3) - SLA: 8.0h
-Escalate:    True -> billing
-Reason:      high-priority intent: payment_issue
-Strategy:    Follow payment troubleshooting steps...
-Collect:     ['Player ID', 'Transaction ID', 'Purchase date and amount', 'Platform']
-Processed:   0.31ms
+ STEP 1: INPUT
+------------------------------------------------------------
+Message:       I bought gems but they never showed up in my account.
+Contact count: 1
+VIP player:    False
+
+------------------------------------------------------------
+ STEP 2: CLASSIFICATION (rules-based, deterministic)
+------------------------------------------------------------
+Intent:        payment_issue
+Confidence:    1.0
+Tone:          neutral
+Flags:         none
+Requires human:True
+
+------------------------------------------------------------
+ STEP 3: PRIORITY (rules-based, deterministic)
+------------------------------------------------------------
+Score:         P3 - High
+SLA:           8.0 hours
+Reason:        high-priority intent: payment_issue
+
+------------------------------------------------------------
+ STEP 4: ESCALATION DECISION (rules-based, deterministic)
+------------------------------------------------------------
+Escalate:      True
+Route to:      billing
+Reason:        high-priority intent: payment_issue
+
+------------------------------------------------------------
+ STEP 5: RESPONSE STRATEGY (rules-based, deterministic)
+------------------------------------------------------------
+Tone guidance: Professional and efficient.
+Action:        Follow payment troubleshooting steps.
+Collect:       Player ID, Transaction ID, Purchase date and amount, Platform
+
+------------------------------------------------------------
+ STEP 7: LLM RESPONSE [MOCK]
+------------------------------------------------------------
+NOTE: Mock mode active. Deterministic pre-written response.
+      Set ANTHROPIC_API_KEY in .env to get real Claude responses.
+
+Thank you for reaching out. I'm sorry to hear your purchase didn't arrive.
+Could you please share your Player ID and the transaction ID from your receipt?
+Once I have those, I'll look into this right away.
+
+============================================================
+ TRACE COMPLETE
+============================================================
+Processing time: 0.28ms (triage engine only, excludes LLM)
 ```
 
-You should see four results like this, one for each example ticket.
+---
+
+## Run modes
+
+| Mode | Requires | Cost | Output |
+|---|---|---|---|
+| Mock | Nothing | Free | Deterministic pre-written responses |
+| LLM | `ANTHROPIC_API_KEY` in `.env` | API credits | Real Claude responses |
+
+To switch to LLM mode: add your key to `.env`:
+```
+ANTHROPIC_API_KEY=your_key_here
+```
+
+---
+
+## Other ways to run
+
+```bash
+# Your own message
+python run_agent.py --message "I can't log into my account"
+
+# With contact history and VIP flag
+python run_agent.py --message "still not fixed" --contact-count 3 --vip
+
+# Interactive prompts
+python run_agent.py
+```
 
 ---
 
 ## What this proves
 
-The triage engine is working. It classified the player's intent, scored confidence, assigned priority and SLA, made an escalation decision, routed to the correct team, and specified what information to collect.
+- The triage engine classifies intent, scores confidence, assigns priority and SLA
+- The escalation engine makes a routing decision
+- The prompt is assembled from system prompt + KB context + strategy
+- The LLM (or mock) generates a response grounded in that context
 
 ## What this does not prove
 
-- No message was sent to any player
-- The engine is not connected to Zendesk or any live platform
-- No LLM was called - the classifier is entirely rules-based
-- The system prompt in `system-prompt.md` governs LLM behavior but is not invoked here
+- No message is sent to any real player
+- Not connected to any live support platform
+- Mock mode responses are pre-written, not generated by Claude
 
----
-
-## No API key needed for this
-
-`example_run.py` and `pytest tests/` run completely free with no Anthropic API key.
-
-The API key is only needed for:
-- `python multilingual/example_multilingual.py`
-- Any feature that calls Claude to generate a player-facing response
+See [examples/end_to_end_trace.md](examples/end_to_end_trace.md) for a full annotated trace explaining every step.
 
 ---
 
 ## Next steps
 
 ```bash
+# Sync knowledge base for semantic search (improves response quality)
+python rag/kb_sync.py
+python run_agent.py --demo   # Now has RAG context
+
 # Run unit tests
 pytest tests/ -v
 
-# Sync knowledge base for semantic search
-python rag/kb_sync.py
-# Note: first run downloads ~80MB model, takes 1-2 minutes - do not close terminal
-
-# Test semantic retrieval
-python rag/example_rag.py
-
 # Run full evaluation pipeline
-python evaluation/scripts/fetch_tickets.py
-python evaluation/scripts/evaluate_tickets.py
-python evaluation/scripts/generate_report.py
+make eval
 ```
 
 See [GETTING_STARTED.md](GETTING_STARTED.md) for all available commands.
-See [SETUP.md](SETUP.md) for full installation details and troubleshooting.
+See [SETUP.md](SETUP.md) for full installation details.
