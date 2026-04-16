@@ -7,7 +7,7 @@ This guide explains how to set up and run the project locally. You do not need t
 ## Prerequisites
 
 - Python 3.10 or higher
-- An Anthropic API key (for multilingual support and future LLM integration)
+- An Anthropic API key
 - Git (to clone the repository)
 
 To check your Python version:
@@ -34,12 +34,22 @@ This installs:
 - `anthropic` - Claude API client
 - `chromadb` - local vector database for RAG
 - `sentence-transformers` - local embedding model for semantic search
+- `flask` - web server for the Zendesk webhook
+- `gunicorn` - production server
+- `python-dotenv` - loads environment variables from `.env`
+- `requests` - HTTP client for Zendesk API calls
 - `pytest` - test runner
 
-**3. Set your API key (required for multilingual example only)**
+**3. Set up your environment variables**
+
+Copy the example file and fill in your values:
 ```bash
-export ANTHROPIC_API_KEY=your_key_here
+cp .env.example .env
 ```
+
+Open `.env` and fill in:
+- `ANTHROPIC_API_KEY` - from console.anthropic.com
+- Zendesk credentials (only needed for the Zendesk integration)
 
 ---
 
@@ -47,7 +57,7 @@ export ANTHROPIC_API_KEY=your_key_here
 
 ### 1. Single ticket through the triage engine
 
-Runs four example tickets through the classifier, prioritizer, and escalation engine and prints the results.
+Runs four example tickets through the classifier, prioritizer, and escalation engine.
 
 ```bash
 python example_run.py
@@ -59,33 +69,29 @@ What you will see: intent classification, confidence score, priority level, esca
 
 ### 2. Unit tests
 
-Runs the test suite for the classifier and prioritizer.
-
 ```bash
 pytest tests/
 ```
 
-What you will see: which tests passed, which failed, and a summary. All tests should pass on a clean install.
+All tests should pass on a clean install.
 
 ---
 
 ### 3. Sync the knowledge base into the vector store (RAG)
 
-Loads all markdown files from `knowledge-base/` into ChromaDB so the retriever can perform semantic search.
+Loads all markdown files from `knowledge-base/` into ChromaDB for semantic search.
 
 ```bash
 python rag/kb_sync.py
 ```
 
-What you will see: each file being processed, how many chunks were created, and a sync summary. This creates a `rag/chroma_store/` folder locally.
-
-Run this once before using the RAG retriever. Re-run it any time you update the knowledge base.
+Run this once before using the RAG retriever. Re-run it any time you update knowledge base files.
 
 ---
 
 ### 4. RAG retrieval example
 
-Demonstrates how the semantic retriever finds relevant knowledge base content for player messages, including non-standard phrasing that keyword matching would miss.
+Shows how semantic search finds relevant KB content even when a player uses non-standard phrasing.
 
 ```bash
 python rag/example_rag.py
@@ -93,42 +99,28 @@ python rag/example_rag.py
 
 Requires: `rag/kb_sync.py` to have been run first.
 
-What you will see: for each example message, the top matching KB sections and their similarity scores.
-
 ---
 
 ### 5. Full evaluation pipeline
 
-Tests the triage engine against 200 synthetic support tickets and produces an accuracy report.
-
-Run the three scripts in order:
+Tests the triage engine against 200 synthetic tickets and produces an accuracy report.
 
 ```bash
-# Step 1: Generate 200 synthetic tickets
+# Step 1: Generate synthetic tickets
 python evaluation/scripts/fetch_tickets.py
 
-# Step 2: Run all tickets through the engine and compare results
+# Step 2: Run tickets through the engine
 python evaluation/scripts/evaluate_tickets.py
 
-# Step 3: Generate a markdown report with statistics
+# Step 3: Generate the report
 python evaluation/scripts/generate_report.py
 ```
 
-What you will see after step 3:
-- Overall pass rate
-- Intent classification accuracy
-- Escalation accuracy
-- False negatives (tickets that should have escalated but did not)
-- False positives (tickets that escalated unnecessarily)
-- Failures broken down by intent type
-
-The report is saved to `evaluation/data/report.md`.
+Report is saved to `evaluation/data/report.md`. Shows intent accuracy, escalation accuracy, false negatives, and false positives.
 
 ---
 
 ### 6. Multilingual support example
-
-Demonstrates language detection and multilingual response generation.
 
 ```bash
 python multilingual/example_multilingual.py
@@ -136,7 +128,63 @@ python multilingual/example_multilingual.py
 
 Requires: `ANTHROPIC_API_KEY` to be set.
 
-What you will see: the same payment issue described in Spanish, French, Turkish, and Portuguese - each detected and responded to in the player's language.
+---
+
+### 7. Gap tracker - see what the KB is missing
+
+After tickets have been processed, review which questions the system could not confidently answer:
+
+```bash
+python -c "
+from feedback.gap_tracker import get_gap_summary
+import json
+print(json.dumps(get_gap_summary(), indent=2))
+"
+```
+
+---
+
+### 8. Feedback summary - review QA corrections
+
+```bash
+python -c "
+from feedback.feedback_store import get_feedback_summary
+import json
+print(json.dumps(get_feedback_summary(), indent=2))
+"
+```
+
+---
+
+### 9. Zendesk webhook server (local testing)
+
+Run the webhook server locally:
+
+```bash
+python integrations/zendesk_webhook.py
+```
+
+To expose it publicly for Zendesk to reach during testing, use ngrok:
+
+```bash
+# In terminal 1
+python integrations/zendesk_webhook.py
+
+# In terminal 2
+ngrok http 8000
+```
+
+Copy the `https://` URL from ngrok and use it as your Zendesk webhook endpoint.
+
+For full Zendesk setup instructions see: `integrations/zendesk-integration-guide.md`
+
+---
+
+### 10. Zendesk webhook server (production)
+
+```bash
+gunicorn integrations.zendesk_webhook:app --bind 0.0.0.0:8000 --workers 2
+```
 
 ---
 
@@ -144,21 +192,24 @@ What you will see: the same payment issue described in Spanish, French, Turkish,
 
 | Folder / File | What it is |
 |---|---|
-| `engine/` | Python triage engine (classifier, prioritizer, escalation, pipeline) |
-| `rag/` | Semantic search layer (KB sync, retriever, vector store) |
-| `feedback/` | Gap tracking and correction recording |
+| `engine/` | Triage engine: classifier, prioritizer, escalation, pipeline |
+| `rag/` | Semantic search: KB sync, retriever, ChromaDB vector store |
+| `feedback/` | Gap tracking and QA correction recording |
 | `multilingual/` | Language detection and multilingual response |
-| `evaluation/` | Test suite, evaluation scripts, and report generator |
-| `tests/` | Unit tests for the engine |
+| `integrations/` | Zendesk webhook server and API client |
+| `evaluation/` | Test suite, evaluation scripts, report generator |
+| `tests/` | Unit tests |
 | `knowledge-base/` | Markdown policy and FAQ documents |
-| `operations/` | Operational templates (handover, reporting, incident response) |
+| `operations/` | Operational templates |
 | `qa/` | QA framework and scoring tools |
-| `onboarding/` | Agent training and certification documents |
-| `sample-conversations/` | Illustrative interaction examples (not test evidence) |
+| `onboarding/` | Agent training and certification |
+| `sample-conversations/` | Illustrative examples (not test evidence) |
 | `system-prompt.md` | Core assistant behavior rules |
 | `interaction-flow.md` | Step-by-step decision flow |
 | `evaluation-criteria.md` | How performance is measured |
-| `failure-analysis.md` | Known failure modes and mitigations |
+| `evaluation/failure-analysis.md` | Known failure modes and mitigations |
+| `CONTRIBUTING.md` | How to adapt this for your own company |
+| `integrations/zendesk-integration-guide.md` | Full Zendesk setup guide |
 
 ---
 
@@ -168,10 +219,19 @@ What you will see: the same payment issue described in Spanish, French, Turkish,
 Run `pip install -r requirements.txt`
 
 **`ValueError: Collection player_care_kb does not exist`**
-Run `python rag/kb_sync.py` first to populate the vector store.
+Run `python rag/kb_sync.py` first.
 
 **`AuthenticationError` from Anthropic**
-Make sure `ANTHROPIC_API_KEY` is set in your environment.
+Make sure `ANTHROPIC_API_KEY` is set in your `.env` file.
+
+**`ModuleNotFoundError: No module named 'dotenv'`**
+Run `pip install python-dotenv`
 
 **Slow first run of RAG or multilingual**
 The `sentence-transformers` model (~80MB) downloads on first use. Subsequent runs are fast.
+
+**Zendesk webhook returns 401**
+Check that `WEBHOOK_SECRET` in your `.env` matches the signing secret in Zendesk exactly.
+
+**Tickets not getting internal notes in Zendesk**
+Check in order: (1) Is the Zendesk trigger firing? (2) Is the webhook receiving the request? Check server logs. (3) Is the API token correct and has ticket write permission?
