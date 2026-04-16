@@ -3,23 +3,41 @@
 # Run any command with: make <command>
 # Example: make setup
 
-.PHONY: help setup test run sync-kb rag-example eval feedback-summary gap-summary webhook lint clean
+.PHONY: help setup test run agent agent-demo agent-interactive sync-kb rag-example eval feedback gaps webhook lint clean
 
 # Default target - show available commands
 help:
 	@echo ""
 	@echo "Player Care AI - Available commands:"
 	@echo ""
-	@echo "  make setup         Create venv, install dependencies, copy .env.example"
-	@echo "  make test          Run unit tests"
-	@echo "  make run           Run the example triage pipeline"
-	@echo "  make sync-kb       Sync knowledge base into ChromaDB vector store"
-	@echo "  make rag-example   Run RAG retrieval demo"
-	@echo "  make eval          Run full evaluation pipeline (generates report)"
-	@echo "  make feedback      Show feedback summary"
-	@echo "  make gaps          Show knowledge gap summary"
-	@echo "  make webhook       Start Zendesk webhook server (local)"
-	@echo "  make clean         Remove generated files (chroma_store, evaluation data)"
+	@echo "  SETUP"
+	@echo "  make setup              Create venv, install dependencies, copy .env.example"
+	@echo ""
+	@echo "  RUNNING THE AGENT"
+	@echo "  make agent-demo         Run agent with preset demo message (quickest start)"
+	@echo "  make agent-interactive  Run agent with interactive input prompts"
+	@echo "  make agent-interactive m='your message here'  Run with a specific message"
+	@echo ""
+	@echo "  TRIAGE ENGINE (no LLM)"
+	@echo "  make run                Run the triage engine example (4 preset tickets)"
+	@echo ""
+	@echo "  KNOWLEDGE BASE"
+	@echo "  make sync-kb            Sync knowledge base into ChromaDB vector store"
+	@echo "  make rag-example        Run RAG retrieval demo"
+	@echo ""
+	@echo "  TESTING"
+	@echo "  make test               Run unit tests"
+	@echo "  make eval               Run full evaluation pipeline (generates report)"
+	@echo ""
+	@echo "  FEEDBACK"
+	@echo "  make feedback           Show feedback summary"
+	@echo "  make gaps               Show knowledge gap summary"
+	@echo ""
+	@echo "  ZENDESK"
+	@echo "  make webhook            Start Zendesk webhook server (local)"
+	@echo ""
+	@echo "  CLEANUP"
+	@echo "  make clean              Remove generated files (chroma_store, evaluation data)"
 	@echo ""
 
 # First-time setup
@@ -32,17 +50,28 @@ setup:
 	@echo ""
 	@echo "Setup complete. Next steps:"
 	@echo "  1. Activate venv: source venv/bin/activate"
-	@echo "  2. Edit .env with your API keys"
-	@echo "  3. Run: make sync-kb"
-	@echo "  4. Run: make run"
+	@echo "  2. Edit .env (API key optional - works in mock mode without it)"
+	@echo "  3. Run: make agent-demo"
+
+# Run the full agent (with LLM or mock)
+agent-demo:
+	python run_agent.py --demo
+
+agent-interactive:
+	python run_agent.py
+
+# Run agent with a specific message
+# Usage: make agent m="I was charged but didn't receive my coins"
+agent:
+	python run_agent.py --message "$(m)"
+
+# Run the triage engine only (no LLM, no prompt)
+run:
+	python example_run.py
 
 # Run unit tests
 test:
 	pytest tests/ -v
-
-# Run the triage engine example
-run:
-	python example_run.py
 
 # Sync knowledge base into ChromaDB
 sync-kb:
