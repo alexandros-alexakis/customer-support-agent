@@ -2,119 +2,188 @@
 
 ## Overview
 
-This document defines the key performance indicators (KPIs) used 
-to measure the effectiveness of the AI customer support agent. 
-These metrics mirror the standards used to evaluate human Tier 1 
-agents in gaming support operations.
+This document defines how the support assistant's performance is measured. Generic quality metrics are not sufficient. Each metric here is tied to a specific operational risk and has a defined assessment method.
+
+Metrics without assessment methods are not metrics - they are intentions.
 
 ---
 
-## Primary KPIs
+## Metric 1: Escalation Accuracy
 
-### 1. First Contact Resolution (FCR)
+**What is being measured:**
+The percentage of escalations that were correctly triggered (needed to escalate) and correctly routed (went to the right team).
 
-**Definition:** The percentage of tickets resolved without requiring 
-escalation or a follow-up contact from the player.
+**Why it matters:**
+Over-escalation wastes specialist team capacity. Under-escalation leaves high-risk tickets unhandled at the wrong level. Wrong routing causes tickets to bounce between teams.
 
-**Target:** >75% for issues within Tier 1 scope
+**How it is assessed:**
+Weekly QA review of a random sample of escalated tickets. Each is scored: was escalation warranted? Was the team correct?
 
-**How to measure:**
-- Tag each conversation as resolved or escalated
-- Calculate: (Resolved tickets / Total tickets) x 100
-- Exclude out-of-scope tickets from the denominator
+**Target:** >90% correctly triggered, >90% correctly routed
 
----
-
-### 2. Average Handling Time (AHT)
-
-**Definition:** The average time taken from first player message 
-to ticket closure or escalation.
-
-**Target:** Reduction vs. human Tier 1 baseline
-
-**How to measure:**
-- Record timestamp of first player message and ticket close
-- Calculate average across a sample of at least 50 tickets
-- Compare against human agent AHT benchmark
+**Failure modes it catches:** FM-1 (over-escalation), FM-2 (under-escalation)
 
 ---
 
-### 3. Escalation Accuracy
+## Metric 2: Scope Compliance
 
-**Definition:** The percentage of escalations that were correctly 
-routed to the right specialist team with sufficient information.
+**What is being measured:**
+The percentage of interactions where the assistant stayed within its defined Tier 1 scope and did not attempt to handle out-of-scope issues.
 
-**Target:** >90% correctly routed escalations
+**Why it matters:**
+Attempting out-of-scope resolution creates incorrect commitments, wastes time, and erodes player trust when the resolution fails.
 
-**How to measure:**
-- Review escalated tickets with specialist teams weekly
-- Flag incorrectly routed or incomplete escalations
-- Calculate: (Correct escalations / Total escalations) x 100
-
----
-
-### 4. Player Satisfaction (CSAT)
-
-**Definition:** Player-reported satisfaction score collected via 
-post-interaction survey.
-
-**Target:** Maintained or improved vs. human Tier 1 baseline
-
-**How to measure:**
-- Deploy a 1-5 star or thumbs up/down survey after ticket closure
-- Calculate average score across all rated interactions
-- Track weekly and flag drops of more than 0.3 points
-
----
-
-### 5. Policy Compliance Rate
-
-**Definition:** The percentage of responses that correctly followed 
-defined policies (no unauthorized promises, correct escalation 
-triggers, appropriate tone).
+**How it is assessed:**
+QA review flags any interaction where the assistant attempted to resolve a ban appeal, approve a refund, interpret TOS, or handle a GDPR request at Tier 1 level.
 
 **Target:** >95%
 
-**How to measure:**
-- Conduct weekly QA review of a random sample of tickets (10%)
-- Score each ticket against the compliance checklist below
-- Calculate: (Compliant tickets / Reviewed tickets) x 100
+**Failure modes it catches:** FM-3 (hallucinated policy)
 
 ---
 
-## QA Compliance Checklist
+## Metric 3: Evidence Collection Completeness
 
-For each reviewed ticket, verify:
+**What is being measured:**
+For escalated tickets: the percentage where all required information fields (per the decision table) were collected before escalation.
 
-| Check | Pass / Fail |
-|---|---|
-| Agent did not ask for player password | |
-| Agent did not promise refunds or compensation without authorization | |
-| Agent escalated correctly when required | |
-| Agent collected required information before escalating | |
-| Tone was professional and empathetic throughout | |
-| Response was concise and clear | |
-| Player was informed of next steps | |
+**Why it matters:**
+Incomplete escalations bounce back to the player. Each bounce is an additional contact, a CSAT hit, and wasted specialist team time.
+
+**How it is assessed:**
+QA review of escalated tickets checks each required field against the decision table. A ticket is complete or incomplete - no partial credit.
+
+**Target:** >85% complete escalations
+
+**Failure modes it catches:** FM-4 (insufficient evidence gathering)
+
+---
+
+## Metric 4: Hallucination Avoidance
+
+**What is being measured:**
+The percentage of interactions where the assistant did not state policy, rules, or outcomes that are not documented in the knowledge base.
+
+**Why it matters:**
+Hallucinated policy creates implied commitments, legal risk, and player trust damage when the invented policy turns out not to be real.
+
+**How it is assessed:**
+QA reviewers check any policy statement in the assistant's response against the knowledge base. If it cannot be found, it is flagged as a hallucination.
+
+**Target:** 0 hallucinations on policy statements (zero tolerance)
+
+**Failure modes it catches:** FM-3 (hallucinated policy)
+
+---
+
+## Metric 5: Unnecessary Follow-up Rate
+
+**What is being measured:**
+The percentage of interactions where the assistant asked more clarifying questions than were necessary to classify and handle the issue.
+
+**Why it matters:**
+Over-questioning reduces CSAT even when the outcome is correct. Players do not want to answer five questions before receiving help.
+
+**How it is assessed:**
+QA review counts the number of clarifying questions per interaction and compares to the minimum required per the decision table.
+
+**Target:** <10% of interactions with unnecessary follow-up questions
+
+**Failure modes it catches:** FM-6 (over-questioning)
+
+---
+
+## Metric 6: CSAT by Ticket Complexity Band
+
+**What is being measured:**
+Player satisfaction score segmented by ticket complexity (simple / moderate / complex), not as a single aggregate.
+
+**Why it matters:**
+Aggregate CSAT is misleading when AI handles simple tickets and humans handle complex ones. Complexity-controlled CSAT allows like-for-like comparison. See `qa/ai-csat-bias-analysis.md`.
+
+**How it is assessed:**
+Post-interaction survey (1-5 or thumbs up/down). Results segmented by complexity band score from the prioritizer.
+
+**Target:** >80% positive within each complexity band
+
+**Failure modes it catches:** CSAT measurement bias, FM-9 (de-escalation failure)
+
+---
+
+## Metric 7: Incident Detection Sensitivity
+
+**What is being measured:**
+When a widespread incident occurs, what percentage of the time was the incident flagged by the assistant before it was identified through other channels?
+
+**Why it matters:**
+The assistant processes tickets before any other system. If it can flag incident patterns early, incident response time decreases and fewer players receive incorrect individual troubleshooting for a systemic problem.
+
+**How it is assessed:**
+Post-incident review: at what point did the first incident flag appear in the ticket system vs. when the incident was confirmed through other means?
+
+**Target:** Incident flag appears within 30 minutes of incident start for volume-based signals
+
+**Limitation:** This metric requires cross-session aggregation which is not yet implemented. Currently assessed manually.
+
+**Failure modes it catches:** FM-8 (failure to detect incident pattern)
+
+---
+
+## Metric 8: Consistency Across Similar Scenarios
+
+**What is being measured:**
+When two players present identical issues, the assistant's response structure, timeframe statements, and escalation decisions should be consistent.
+
+**Why it matters:**
+Inconsistency creates player distrust and implied policy differences. Players compare notes in communities.
+
+**How it is assessed:**
+Run identical test inputs multiple times and compare outputs. QA calibration sessions also check consistency.
+
+**Target:** No material difference in policy statements, timeframes, or escalation decisions for identical inputs
+
+**Failure modes it catches:** FM-10 (inconsistency across similar cases)
+
+---
+
+## Metric 9: First Contact Resolution Rate (FCR)
+
+**What is being measured:**
+The percentage of tickets resolved at Tier 1 without requiring a follow-up contact from the player.
+
+**Why it matters:**
+FCR is the most direct measure of whether the system is actually solving problems. Low FCR means players are contacting again, which multiplies volume and frustration.
+
+**How it is assessed:**
+Track whether the same player contacts again on the same issue within 7 days of a ticket being closed.
+
+**Target:** >75% FCR on Tier 1 scope
+
+**Failure modes it catches:** FM-7 (premature closure), FM-4 (insufficient evidence gathering)
+
+---
+
+## Metric 10: Policy Adherence Rate
+
+**What is being measured:**
+The percentage of interactions where the assistant followed all defined prohibitions (no password requests, no refund promises, no TOS interpretation, etc.).
+
+**How it is assessed:**
+QA checklist reviewed against the prohibited actions list in system-prompt.md. Each prohibited action that was taken is a failure.
+
+**Target:** >95% (zero tolerance on high-risk prohibitions such as password requests and refund promises)
+
+**Failure modes it catches:** FM-3 (hallucinated policy), FM-2 (under-escalation)
 
 ---
 
 ## Review Cadence
 
-| Review Type | Frequency |
-|---|---|
-| KPI dashboard review | Weekly |
-| QA ticket sampling | Weekly |
-| Escalation accuracy audit | Weekly |
-| Full performance review | Monthly |
-
----
-
-## Iteration Process
-
-When KPIs fall below target:
-
-1. Identify the ticket categories where failures occurred.
-2. Review whether the system prompt or FAQ content is insufficient.
-3. Update the relevant knowledge base file or system prompt rule.
-4. Re-test against the same ticket category.
-5. Document the change and the reason in the repository commit history.
+| Review | Frequency | Owner |
+|---|---|---|
+| QA ticket sampling (10%) | Weekly | QA Reviewer |
+| Escalation accuracy audit | Weekly | Team Lead |
+| CSAT by complexity band | Weekly | L&D Lead |
+| Consistency testing | Monthly | L&D Lead |
+| Incident detection review | Post-incident | Team Lead |
+| Full evaluation review | Monthly | Vendor Manager |
