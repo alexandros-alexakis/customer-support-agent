@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "player-care-ai"
+version = "1.2.0"
+description = "AI-powered Tier 1 customer support triage engine for gaming operations"
+requires-python = ">=3.10"
+dependencies = [
+    "anthropic>=0.25.0",
+    "chromadb>=0.4.0",
+    "sentence-transformers>=2.7.0",
+    "flask>=3.0.0",
+    "gunicorn>=21.0.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["engine*", "rag*", "feedback*", "multilingual*", "integrations*", "evaluation*"]
+
+[tool.pytest.ini_options]
+# Run pytest from the project root.
+# conftest.py handles sys.path so imports work without installing the package.
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
