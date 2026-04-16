@@ -24,6 +24,51 @@ This is a **policy-driven support assistant prototype**. The assistant responds 
 
 ---
 
+## Documentation
+
+| Guide | What it covers |
+|---|---|
+| [QUICKSTART.md](QUICKSTART.md) | Clone to first run in 5 minutes |
+| [SETUP.md](SETUP.md) | Full installation: venv, dependencies, validation |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Component map, rule-based vs model-based, request flow |
+| [HOW-IT-WORKS.md](HOW-IT-WORKS.md) | How every decision is made, operationally explained |
+| [CONFIGURATION.md](CONFIGURATION.md) | All environment variables and provider config |
+| [EXAMPLES.md](EXAMPLES.md) | Real input/output examples from the triage engine |
+| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Symptom, cause, resolution for common failures |
+| [EXTENDING.md](EXTENDING.md) | How to add issue types, rules, KB content safely |
+| [LIMITATIONS.md](LIMITATIONS.md) | What is prototype-only, mocked, or missing |
+| [PRODUCTIONIZATION.md](PRODUCTIONIZATION.md) | 5-phase roadmap to production deployment |
+| [REPOSITORY-MAP.md](REPOSITORY-MAP.md) | Every file explained in one place |
+| [VALIDATION-CHECKLIST.md](VALIDATION-CHECKLIST.md) | Confirm setup is working correctly |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Adapt this for your own company |
+| [GETTING_STARTED.md](GETTING_STARTED.md) | All runnable commands with expected output |
+| [integrations/zendesk-integration-guide.md](integrations/zendesk-integration-guide.md) | Complete Zendesk webhook setup |
+
+---
+
+## Quickstart
+
+```bash
+git clone https://github.com/alexandros-alexakis/customer-support-agent.git
+cd customer-support-agent
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+python example_run.py
+```
+
+Or with Make:
+
+```bash
+make setup
+source venv/bin/activate
+make sync-kb
+make run
+```
+
+See [QUICKSTART.md](QUICKSTART.md) for expected output and what the demo proves.
+
+---
+
 ## Architecture
 
 ```
@@ -48,13 +93,15 @@ Incoming ticket
  knowledge-base/           # FAQ, policies, escalation rules, edge cases
 ```
 
-The engine handles triage. The system prompt governs what the assistant says. The knowledge base defines what it knows. These three layers are intentionally separate so each can be updated independently.
+The engine is entirely rules-based and deterministic. The system prompt governs non-deterministic LLM behavior. The knowledge base is loaded into ChromaDB for semantic retrieval. These three layers are intentionally separate.
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the full component map and [HOW-IT-WORKS.md](HOW-IT-WORKS.md) for how each decision is made.
 
 ---
 
 ## Scope
 
-The assistant is scoped to **Tier 1 player support** only:
+The assistant handles **Tier 1 player support** only:
 
 - Payment and purchase issues
 - Account access and login problems
@@ -64,7 +111,7 @@ The assistant is scoped to **Tier 1 player support** only:
 - VIP player handling
 - Escalation routing for out-of-scope issues
 
-Out of scope at Tier 1: ban enforcement decisions, fraud investigation, legal and GDPR responses, account security breaches, refund approvals.
+Out of scope at Tier 1: ban enforcement, fraud investigation, legal and GDPR responses, refund approvals.
 
 ---
 
@@ -72,107 +119,44 @@ Out of scope at Tier 1: ban enforcement decisions, fraud investigation, legal an
 
 | Limitation | Detail |
 |---|---|
-| No account data access | The assistant cannot verify purchases, balances, or account history. It works only on player-provided information. |
-| No session memory | Each conversation starts fresh. Prior contact history must be passed in as a parameter. |
-| English only | Signal dictionaries and knowledge base are English. Multilingual support is not implemented. |
-| Keyword-based classification | The classifier uses signal matching, not semantic understanding. Unusual phrasing reduces accuracy. |
-| Confidence threshold gaps | Low-confidence tickets route to humans. This is correct but creates load on human agents during ambiguous volume spikes. |
-| No incident detection across sessions | The system cannot detect that multiple players are reporting the same issue simultaneously without external aggregation. |
-| Prototype system prompt | The system prompt has not been red-teamed or stress-tested at production volume. |
+| No account data access | Works only on player-provided text. Cannot verify purchases or account history. |
+| No session memory | Each ticket is stateless. Prior contact history is passed in as a parameter. |
+| Keyword-based classification | Unusual phrasing reduces accuracy. RAG retrieval partially compensates. |
+| No live LLM response loop | System prompt and RAG are defined. The integration call wiring them into a running agent is not implemented. |
+| No incident detection | Cannot detect multiple players reporting the same issue across sessions. |
+| Prototype system prompt | Not red-teamed at production volume. |
+
+See [LIMITATIONS.md](LIMITATIONS.md) for the complete list.
 
 ---
-
-## What Productionization Would Require
-
-1. **Account data integration** - API access to player account records, transaction history, and game event logs so the assistant can verify claims rather than accept them at face value.
-2. **Session continuity** - Persistent conversation state so the assistant knows what was tried in prior contacts.
-3. **Incident detection layer** - Cross-session signal aggregation to detect when multiple players report the same issue, triggering a proactive incident response.
-4. **Multilingual support** - Either translated signal dictionaries or replacement of keyword classification with LLM-based intent detection.
-5. **Red-teaming the system prompt** - Structured adversarial testing for prompt injection, policy bypass attempts, and edge case handling.
-6. **Human review pipeline** - Formal workflow for tickets flagged as low confidence or requiring escalation, with SLA tracking.
-7. **Metrics backend** - Live tracking of classification accuracy, escalation rate, CSAT by ticket type, and unknown intent rate. See `engine/metrics_spec.py`.
-8. **QA sampling automation** - Automated flagging of interactions for human QA review based on confidence score and issue type.
-
----
-
-## Repository Structure
-
-```
-engine/                        # Python triage engine
-  classifier.py                # Intent + tone classification
-  prioritizer.py               # Priority scoring
-  escalation.py                # Escalation decisions
-  response_router.py           # Response strategy
-  pipeline.py                  # Orchestrator
-  logging_config.py            # Structured JSON logging
-  metrics_spec.py              # What to measure and why
-
-tests/                         # Unit tests
-  test_classifier.py
-  test_prioritizer.py
-
-evaluation/
-  test-cases.md                # 30+ test scenarios
-  failure-analysis.md          # Known failure modes and mitigations
-
-knowledge-base/                # Operational knowledge
-  faq-payments.md
-  faq-account-access.md
-  faq-game-mechanics.md
-  faq-technical-issues.md
-  escalation-rules.md
-  decision-table.md            # Structured decision logic
-  vip-player-handling.md
-  seasonal-events-guide.md
-  refund-policy-detail.md
-  banned-account-faq.md
-  gdpr-requests.md
-  tos-violations-guide.md
-  edge-cases.md                # Realistic edge case handling
-
-operations/                    # Operational templates
-sample-conversations/          # Style examples (not test evidence)
-onboarding/                    # Agent training
-qa/                            # QA framework
-
-system-prompt.md               # Core assistant behavior rules
-interaction-flow.md            # Decision flow
-evaluation-criteria.md         # How performance is measured
-tone-guide.md
-agent-limitations.md
-agent-versioning.md
-prompt-engineering-notes.md
-CHANGELOG.md
-roadmap.md
-CONTRIBUTING.md
-```
-
----
-
-## Running the engine
-
-```bash
-pip install -r requirements.txt
-python example_run.py
-```
 
 ## Running tests
 
 ```bash
-pytest tests/
+pytest tests/ -v
+```
+
+## Running the evaluation pipeline
+
+```bash
+make eval
+# or manually:
+python evaluation/scripts/fetch_tickets.py
+python evaluation/scripts/evaluate_tickets.py
+python evaluation/scripts/generate_report.py
 ```
 
 ---
 
 ## Evaluation approach
 
-See `evaluation-criteria.md` for full metrics definitions. Key measures:
-
 - Escalation accuracy (target: >90% correctly routed)
 - Scope compliance (target: >95%)
 - Evidence collection completeness
 - Hallucination avoidance
-- CSAT by ticket complexity band (see `qa/ai-csat-bias-analysis.md`)
+- CSAT by ticket complexity band
+
+See [evaluation-criteria.md](evaluation-criteria.md) for full metric definitions and [evaluation/failure-analysis.md](evaluation/failure-analysis.md) for known failure modes.
 
 ---
 
@@ -187,4 +171,6 @@ Scorewarrior, Limassol, Cyprus
 
 ## Status
 
-Prototype. Functional triage engine with unit tests. System prompt and knowledge base are design artifacts, not deployed configuration. See `roadmap.md` for what comes next.
+Prototype. Functional triage engine with unit tests, semantic knowledge base, gap tracking, feedback loop, multilingual support, evaluation pipeline, and Zendesk integration guide. System prompt and knowledge base are design artifacts, not deployed configuration.
+
+See [PRODUCTIONIZATION.md](PRODUCTIONIZATION.md) for what is required to deploy this in production.
