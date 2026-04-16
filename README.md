@@ -1,119 +1,135 @@
-# Customer Support Agent - Claude AI (Gaming Support)
+# Player Care AI Engine
 
 ![Project Banner](banner%20(1).png)
 
-## Overview
+## What this is
 
-This project documents the design and implementation of a production-grade AI-powered customer support agent built using Claude AI (Anthropic). The agent is designed for Tier 1 gaming customer support operations, targeting common player issues in mobile/PC strategy games.
+A domain-specific AI engine for Tier 1 gaming customer support, built on top of Claude AI (Anthropic).
 
-The goal is to reduce agent handling time on repetitive tickets, improve response consistency across multilingual teams, create a scalable onboarding resource for new support agents, and establish a measurable quality framework for both AI and human agent performance.
+This is not a generic chatbot wrapper. It is a modular processing pipeline designed around the actual operational constraints of player support at scale: high ticket volume, multilingual teams, variable player value, and the need for consistent escalation decisions under pressure.
 
----
-
-## Problem Statement
-
-Customer support teams in gaming handle high volumes of repetitive Tier 1 tickets: payment issues, account access, in-game bugs, and general game mechanic questions. New agents require significant ramp-up time, and response quality varies across team members and languages.
-
-An AI agent that handles or assists with Tier 1 queries can:
-- Reduce average handling time (AHT)
-- Improve first contact resolution (FCR)
-- Free senior agents for complex escalations
-- Standardize tone and policy adherence
-- Accelerate new agent onboarding through documented standards
+Built and documented by **Alexandros Alexakis**, Vendor Manager & L&D Lead at Scorewarrior.
 
 ---
 
-## Agent Design
+## The problem this solves
 
-### Scope
+Support teams handling large game titles deal with a predictable but high-volume mix of Tier 1 issues: payment failures, account access, bugs, and player frustration. The challenge is not answering these questions - it is doing so consistently, at scale, without burning out agents on repetitive work or letting complex cases slip through.
 
-The agent is scoped to Tier 1 customer support queries including:
-- Payment and purchase issues
-- Account access and login problems
-- In-game item or currency discrepancies
-- Game mechanic questions
-- Technical troubleshooting (crashes, connectivity, device issues)
-- VIP player handling
-- Escalation routing for issues outside Tier 1 scope
+The specific failure modes this engine addresses:
 
-### Architecture
-
-- **Model:** Claude (Anthropic)
-- **Interface:** Claude.ai Projects (prototype stage)
-- **Knowledge base:** Structured FAQ documents uploaded as context
-- **Escalation logic:** Defined in system prompt rules
-- **QA framework:** Standardized scoring across AI and human interactions
+- **Inconsistent escalation decisions** - whether a ticket gets escalated depends too much on which agent handles it
+- **Poor prioritisation** - urgent tickets (churn risk, VIP complaints, legal threats) sit in the same queue as mechanic questions
+- **No early warning on player sentiment** - by the time frustration becomes a visible problem, the player is already churning
+- **CSAT measurement bias** - AI handles easy tickets, agents handle hard ones, and the comparison tells you nothing useful (see `qa/ai-csat-bias-analysis.md`)
 
 ---
 
-## Repository Structure
+## Architecture
 
-| File / Folder | Description |
-|---|---|
-| `system-prompt.md` | Core agent instructions and behavior rules |
-| `tone-guide.md` | Communication standards with good/bad examples |
-| `agent-limitations.md` | Honest assessment of what the agent can and cannot do |
-| `prompt-engineering-notes.md` | Design decisions behind the system prompt |
-| `evaluation-criteria.md` | KPIs used to measure agent performance |
-| `CHANGELOG.md` | Version history of the agent |
-| `roadmap.md` | Planned improvements and future development |
-| **knowledge-base/** | |
-| `faq-payments.md` | Payment and purchase FAQ |
-| `faq-account-access.md` | Login and account recovery FAQ |
-| `faq-game-mechanics.md` | In-game feature and mechanics FAQ |
-| `faq-technical-issues.md` | Crashes, connectivity and device issues |
-| `escalation-rules.md` | When and how to escalate |
-| `vip-player-handling.md` | Differentiated handling for high-value players |
-| `seasonal-events-guide.md` | Handling event-related ticket spikes |
-| **sample-conversations/** | |
-| `payment-issue-example.md` | Sample payment handled ticket |
-| `escalation-example.md` | Sample immediate escalation |
-| `angry-player-example.md` | De-escalation scenario |
-| `vip-complaint-example.md` | VIP player handling scenario |
-| `technical-issue-example.md` | Device and crash troubleshooting |
-| `repeat-contact-example.md` | Handling a player's second contact |
-| `fraud-suspicion-example.md` | Player reporting suspected cheating |
-| **operations/** | |
-| `shift-handover-template.md` | End-of-shift handover process |
-| `incident-response-playbook.md` | Response process for large-scale incidents |
-| `capacity-planning-guide.md` | Staffing forecasting methodology |
-| `weekly-reporting-template.md` | Weekly KPI report for management |
-| **qa/** | |
-| `qa-framework.md` | Full scoring system for evaluating interactions |
-| `calibration-guide.md` | How QA reviewers align on scoring standards |
-| `coaching-template.md` | Structure for post-QA feedback sessions |
-| `common-failure-patterns.md` | Most frequent agent mistakes and corrections |
-| **onboarding/** | |
-| `agent-training-guide.md` | Week-by-week onboarding plan for new agents |
-| `new-agent-checklist.md` | Day 1 through month 1 milestone checklist |
-| `certification-criteria.md` | What qualifies an agent as fully trained |
-| `qa-scorecard.md` | Per-ticket QA evaluation form |
+```
+Incoming ticket
+      |
+      v
+ classifier.py       # Intent and tone detection with confidence scoring
+      |
+      v
+ prioritizer.py      # Rules-based priority scoring (P1-P5) with SLA targets
+      |
+      v
+ escalation.py       # Escalation decision and team routing
+      |
+      v
+ response_router.py  # Translate decisions into agent response strategy
+      |
+      v
+ pipeline.py         # Orchestrates all steps with structured logging
+```
+
+Each module has a single responsibility. This is deliberate. When escalation logic changes (and it will), you edit one file. When routing rules change, you edit one file. Nothing is entangled.
 
 ---
 
-## Key Design Decisions
+## Key design decisions
 
-**Tone:** The agent maintains a professional, empathetic tone at all times. It does not speculate on issues outside its knowledge base.
+**Rules-based classification, not ML**
 
-**Escalation-first on ambiguity:** When the agent cannot resolve an issue with confidence, it escalates rather than guessing. This protects player trust and reduces incorrect resolutions.
+The intent classifier uses keyword signal matching rather than a trained model. This is a deliberate tradeoff. Rules are auditable, explainable to non-technical stakeholders, and adjustable without retraining. The downside is lower recall on unusual phrasing. The mitigation is a confidence threshold below which the system defers to human review rather than guessing.
 
-**No unauthorized promises:** The agent never commits to refunds, restorations, or specific outcomes. Only timeframes and escalation commitments are made.
+**Confidence threshold at 0.65**
 
-**VIP differentiation:** High-value players receive priority handling, reduced response timeframes, and proactive follow-up.
+Below 65% confidence, the system does not act autonomously. It routes to a human. This is conservative by design. A wrong autonomous response damages player trust more than a slight delay from human review.
 
-**Human oversight retained:** The agent is designed to assist and augment human agents, not replace human judgment on complex or sensitive cases.
+**Hard escalation rules are non-negotiable**
+
+Certain conditions always escalate regardless of confidence: legal threats, ban appeals, fraud reports, VIP players, repeat contacts. These are not configurable at runtime. Operational decisions that bypass these rules require a code change, not a config tweak - making the decision visible and deliberate.
+
+**Priority is rules-based, not ML-scored**
+
+Priority scoring uses a deterministic rules engine. The inputs are intent, tone, VIP status, and contact history. This produces a score of 1-5 with an attached SLA target. Rules-based priority is faster, more auditable, and easier to explain to operations teams than a black-box score.
+
+**Structured logging at every step**
+
+Every pipeline stage emits a structured JSON log event. Classification decisions, escalation triggers, and processing times are all logged with player context. This makes it possible to audit why a ticket was handled a specific way after the fact.
 
 ---
 
-## Evaluation Criteria
+## Tradeoffs and limitations
 
-| Metric | Target |
-|---|---|
-| First Contact Resolution (FCR) | >75% on Tier 1 scope |
-| Average Handling Time (AHT) | Reduction vs. baseline |
-| Escalation Accuracy | >90% correctly routed |
-| Player Satisfaction (CSAT) | Maintained or improved vs. human Tier 1 |
-| Policy Compliance Rate | >95% |
+**No real-time account data access**
+The classifier has no access to player account records, transaction history, or game data. It works only on the text of the message. This limits its ability to verify claims (e.g. confirming a transaction actually exists before routing to billing).
+
+**Keyword matching misses paraphrase**
+A player who says "took my money" instead of "charged" will score lower on payment intent. The confidence threshold catches the worst cases, but recall is imperfect. This is acceptable at prototype stage and would be addressed with LLM-based classification in production.
+
+**No session memory**
+The pipeline processes each ticket independently. It does not know what was said in previous turns of the same conversation. Contact count is passed in as a parameter from the support platform, not inferred.
+
+**English only**
+The signal dictionaries are in English. Multilingual support requires translated signal sets or replacement with an LLM-based classifier.
+
+---
+
+## Repository structure
+
+```
+engine/
+  classifier.py          # Intent and tone classification
+  prioritizer.py         # Priority scoring and SLA assignment
+  escalation.py          # Escalation decisions and team routing
+  response_router.py     # Response strategy generation
+  pipeline.py            # Full pipeline orchestrator
+  logging_config.py      # Structured JSON logging
+  metrics_spec.py        # What to measure and why
+
+tests/
+  test_classifier.py     # Unit tests for classification logic
+  test_prioritizer.py    # Unit tests for priority scoring
+
+knowledge-base/          # FAQ and policy documents for agent reference
+operations/              # Operational templates and playbooks
+qa/                      # QA framework and evaluation tools
+onboarding/              # Agent training and certification
+sample-conversations/    # Annotated example interactions
+```
+
+---
+
+## Running the example
+
+```bash
+pip install -r requirements.txt
+python example_run.py
+```
+
+---
+
+## Running tests
+
+```bash
+pip install pytest
+pytest tests/
+```
 
 ---
 
@@ -128,4 +144,4 @@ Scorewarrior, Limassol, Cyprus
 
 ## Status
 
-Active development. See `roadmap.md` for planned improvements and `CHANGELOG.md` for version history.
+Prototype stage. The engine is functional and tested. Production deployment would require integration with a live support platform webhook, account data API, and a metrics backend. See `roadmap.md` for planned improvements.

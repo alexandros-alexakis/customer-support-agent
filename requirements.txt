@@ -1,0 +1,8 @@
+# Runtime dependencies
+# This system is intentionally lightweight on dependencies.
+# The classifier is rules-based with no ML library required at inference time.
+# LLM calls go through the Anthropic SDK.
+anthropic>=0.25.0
+
+# Testing
+pytest>=8.0.0
