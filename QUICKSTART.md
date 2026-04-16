@@ -1,39 +1,52 @@
 # Quickstart
 
-Get from clone to first successful run in under 5 minutes.
+Get from clone to first successful run as fast as possible.
 
 ---
 
-## Step 1: Clone and enter the project
+## Fastest path (recommended)
 
+**macOS / Linux:**
 ```bash
 git clone https://github.com/alexandros-alexakis/customer-support-agent.git
 cd customer-support-agent
+bash setup.sh
 ```
 
-## Step 2: Create a virtual environment
+**Windows (Command Prompt - not PowerShell):**
+```
+git clone https://github.com/alexandros-alexakis/customer-support-agent.git
+cd customer-support-agent
+setup.bat
+```
+
+The setup script installs everything and prints exactly what to do next.
+
+---
+
+## After setup: run the example
+
+Activate your virtual environment first:
 
 ```bash
-python -m venv venv
-source venv/bin/activate        # macOS / Linux
-venv\Scripts\activate           # Windows
+# macOS / Linux
+source venv/bin/activate
+
+# Windows
+venv\Scripts\activate
 ```
 
-## Step 3: Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-## Step 4: Run the example
+Then run:
 
 ```bash
 python example_run.py
 ```
 
-## Expected output
+**You must activate the venv every time you open a new terminal.** If you see `ModuleNotFoundError`, this is why.
 
-You should see four ticket results printed to the terminal. Each looks like this:
+---
+
+## Expected output
 
 ```
 ============================================================
@@ -52,15 +65,51 @@ Collect:     ['Player ID', 'Transaction ID', 'Purchase date and amount', 'Platfo
 Processed:   0.31ms
 ```
 
+You should see four results like this, one for each example ticket.
+
+---
+
 ## What this proves
 
-The triage engine is working. It classified the intent, scored a confidence level, assigned priority and SLA, made an escalation decision, determined the routing team, and specified what information to collect.
+The triage engine is working. It classified the player's intent, scored confidence, assigned priority and SLA, made an escalation decision, routed to the correct team, and specified what information to collect.
 
 ## What this does not prove
 
-- This is not a live agent. No message was sent to any player.
-- The engine is not connected to Zendesk or any support platform.
-- No LLM was called in this run. The classifier is rules-based.
-- The system prompt in `system-prompt.md` governs LLM behavior but is not invoked by `example_run.py`.
+- No message was sent to any player
+- The engine is not connected to Zendesk or any live platform
+- No LLM was called - the classifier is entirely rules-based
+- The system prompt in `system-prompt.md` governs LLM behavior but is not invoked here
 
-See `GETTING_STARTED.md` for all available commands including RAG, evaluation pipeline, and Zendesk integration.
+---
+
+## No API key needed for this
+
+`example_run.py` and `pytest tests/` run completely free with no Anthropic API key.
+
+The API key is only needed for:
+- `python multilingual/example_multilingual.py`
+- Any feature that calls Claude to generate a player-facing response
+
+---
+
+## Next steps
+
+```bash
+# Run unit tests
+pytest tests/ -v
+
+# Sync knowledge base for semantic search
+python rag/kb_sync.py
+# Note: first run downloads ~80MB model, takes 1-2 minutes - do not close terminal
+
+# Test semantic retrieval
+python rag/example_rag.py
+
+# Run full evaluation pipeline
+python evaluation/scripts/fetch_tickets.py
+python evaluation/scripts/evaluate_tickets.py
+python evaluation/scripts/generate_report.py
+```
+
+See [GETTING_STARTED.md](GETTING_STARTED.md) for all available commands.
+See [SETUP.md](SETUP.md) for full installation details and troubleshooting.
