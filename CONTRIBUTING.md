@@ -6,7 +6,53 @@ This repository documents the design and ongoing development of an AI-powered cu
 
 ---
 
-## How to Contribute
+## Adapting This for Your Own Company
+
+This project is designed to be domain-adaptable. The core engine, decision logic, and evaluation pipeline are not gaming-specific. If you work in e-commerce, fintech, SaaS, or any other support-heavy industry, you can adapt this for your own use.
+
+### What you need to replace
+
+| Component | What to do |
+|---|---|
+| `knowledge-base/` | Replace all markdown files with your own company's policies, FAQs, and escalation rules |
+| `system-prompt.md` | Update tone, scope, and prohibited actions to match your company's policies |
+| `engine/classifier.py` | Update `INTENT_SIGNALS` with vocabulary relevant to your domain |
+| `knowledge-base/decision-table.md` | Rewrite issue types and escalation paths for your support model |
+| `evaluation/scripts/fetch_tickets.py` | Replace synthetic tickets with examples from your actual ticket types |
+
+### What you can keep as-is
+
+- The full engine architecture (`engine/`)
+- The RAG pipeline (`rag/`)
+- The gap tracking and feedback loop (`feedback/`)
+- The evaluation pipeline structure (`evaluation/scripts/`)
+- The multilingual handler (`multilingual/`)
+- The QA framework and scoring templates (`qa/`)
+
+### Steps to adapt
+
+1. Clone the repository
+2. Replace `knowledge-base/` content with your own policies
+3. Update `system-prompt.md` with your company's rules
+4. Update intent signals in `engine/classifier.py` for your domain vocabulary
+5. Run `python rag/kb_sync.py` to load your knowledge base into the vector store
+6. Run `python example_run.py` to test with example tickets
+7. Update `evaluation/scripts/fetch_tickets.py` with your ticket patterns
+8. Run the full evaluation pipeline to measure performance
+
+### What you will still need to build for production
+
+- Integration with your live support platform (Zendesk, Freshdesk, Intercom, etc.)
+- Connection to your customer account data API for claim verification
+- A front-end interface or chat widget
+- A human review workflow for escalated tickets
+- A metrics backend for live KPI tracking
+
+The gap between a working local prototype and a live production system is real. This project gives you the decision logic, knowledge layer, and evaluation framework. Platform integration is a separate engineering project.
+
+---
+
+## How to Contribute to This Repo
 
 ### Reporting Issues
 
@@ -51,7 +97,8 @@ All contributions should follow these standards:
 - Knowledge base expansions for new ticket types
 - Improvements to the QA framework based on real-world experience
 - Multilingual adaptations of existing documents
-- Feedback from people working in gaming or player care support
+- Adaptations of the system for non-gaming support domains
+- Feedback from people working in player care or customer support operations
 
 ---
 
