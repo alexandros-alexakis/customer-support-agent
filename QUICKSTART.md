@@ -1,6 +1,6 @@
 # Quickstart
 
-Get from clone to a running agent in under 5 minutes.
+Get from clone to a running demo in under 5 minutes.
 
 ---
 
@@ -8,7 +8,7 @@ Get from clone to a running agent in under 5 minutes.
 
 **macOS / Linux:**
 ```bash
-git clone https://github.com/your-username/ai-customer-support-agent.git
+git clone https://github.com/alexandros-alexakis/ai-customer-support-agent.git
 cd ai-customer-support-agent
 bash setup.sh
 source venv/bin/activate
@@ -17,14 +17,14 @@ python run_agent.py --demo
 
 **Windows (Command Prompt):**
 ```
-git clone https://github.com/your-username/ai-customer-support-agent.git
+git clone https://github.com/alexandros-alexakis/ai-customer-support-agent.git
 cd ai-customer-support-agent
 setup.bat
 venv\Scripts\activate
 python run_agent.py --demo
 ```
 
-**No API key needed.** The agent runs in mock mode by default - free, deterministic, no setup beyond installing dependencies.
+**No API key needed.** The agent runs in mock mode by default — free, deterministic, no setup beyond installing dependencies.
 
 ---
 

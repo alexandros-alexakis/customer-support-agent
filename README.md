@@ -1,4 +1,4 @@
-# Player Care AI - Support System Design
+# Player Care AI — Support Operations Prototype
 
 ![Project Banner](banner.png)
 
@@ -8,7 +8,7 @@ A structured prototype for a Tier 1 customer support assistant, designed for gam
 
 This project documents the design logic, decision rules, knowledge base, escalation framework, and evaluation criteria for a prompt-driven AI support assistant built on Claude (Anthropic). It includes a working Python classification engine for ticket triage.
 
-Built by **Alexandros Alexakis**, Vendor Manager & L&D Lead.
+Built by **Alexandros Alexakis**, Vendor Manager & L&D Lead — Player Care.
 
 ---
 
@@ -24,6 +24,41 @@ This is a **policy-driven support assistant prototype**. The assistant responds 
 
 ---
 
+## What this demonstrates about me professionally
+
+This project was built by a senior support operations and player care professional — not a software engineer. The value of this repo is not in the code itself, but in the **support logic, escalation thinking, QA awareness, and workflow design** that sit behind it.
+
+What it shows:
+
+- **Triage design**: How I think about classifying tickets by intent, tone, and urgency before any response is written
+- **Escalation logic**: When and why a ticket should skip Tier 1 — legal threats, VIP churn risk, repeat contacts, ban appeals
+- **Priority and SLA thinking**: How different issue types carry different urgency and different human response expectations
+- **Human-in-the-loop awareness**: Where automation is appropriate and where human judgment is non-negotiable
+- **QA thinking**: How I would evaluate AI response quality — not just whether it sounds good, but whether it routes correctly and collects the right information
+- **Practical AI application**: Using AI as an operational tool in a support environment, not building AI as a product
+
+This is what I bring to a support leadership, vendor management, L&D, or AI operations role: the ability to design how AI should behave in customer-facing support workflows, with a clear understanding of where it helps and where it falls short.
+
+---
+
+## Human-in-the-loop review
+
+Every decision made by this system is a **recommendation**, not an autonomous action. The design assumes human review at multiple points:
+
+| Trigger | What happens | Human role |
+|---|---|---|
+| Confidence below 0.65 | Ticket flagged as `requires_human` immediately | Agent reviews and classifies manually |
+| Legal threat detected | Escalated to legal_compliance team | Senior agent or legal lead handles response |
+| VIP churn risk | Escalated to player_relations | Dedicated agent responds, not automated |
+| Repeat contact (3+) | Flagged for senior agent review | Human investigates why prior resolutions failed |
+| Ban appeal | Routed to Trust & Safety | Human reviews account history and policy |
+| Unknown intent | No automated response sent | Agent handles from scratch |
+| Account compromise suspected | Escalated immediately | Human verifies identity before any action |
+
+The AI does not send responses to players autonomously in this prototype. It produces a triage recommendation and a suggested response that a human agent reviews before anything reaches the player.
+
+---
+
 ## Documentation
 
 | Guide | What it covers |
@@ -34,6 +69,7 @@ This is a **policy-driven support assistant prototype**. The assistant responds 
 | [HOW-IT-WORKS.md](HOW-IT-WORKS.md) | How every decision is made, operationally explained |
 | [CONFIGURATION.md](CONFIGURATION.md) | All environment variables and provider config |
 | [EXAMPLES.md](EXAMPLES.md) | Real input/output examples from the triage engine |
+| [CASE-STUDIES.md](CASE-STUDIES.md) | Detailed operational walkthrough of 8 support scenarios |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Symptom, cause, resolution for common failures |
 | [EXTENDING.md](EXTENDING.md) | How to add issue types, rules, KB content safely |
 | [LIMITATIONS.md](LIMITATIONS.md) | What is prototype-only, mocked, or missing |
@@ -49,7 +85,7 @@ This is a **policy-driven support assistant prototype**. The assistant responds 
 ## Quickstart
 
 ```bash
-git clone https://github.com/your-username/ai-customer-support-agent.git
+git clone https://github.com/alexandros-alexakis/ai-customer-support-agent.git
 cd ai-customer-support-agent
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
@@ -104,7 +140,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full component map and [HOW-IT-WO
 ## Run modes
 
 | Mode | Requires | Cost | Output |
-|---|---|---|
+|---|---|---|---|
 | Mock | Nothing | Free | Deterministic pre-written responses |
 | LLM | `ANTHROPIC_API_KEY` in `.env` | API credits | Real Claude responses |
 
@@ -134,7 +170,7 @@ Out of scope at Tier 1: ban enforcement, fraud investigation, legal and GDPR res
 
 ---
 
-## Current Limitations
+## Current limitations
 
 | Limitation | Detail |
 |---|---|
@@ -145,6 +181,20 @@ Out of scope at Tier 1: ban enforcement, fraud investigation, legal and GDPR res
 | Prototype system prompt | Not red-teamed at production volume. |
 
 See [LIMITATIONS.md](LIMITATIONS.md) for the complete list.
+
+---
+
+## What I would do differently in a real support environment
+
+This prototype demonstrates the concept. In a live deployment, I would prioritise:
+
+- **Agent assist before automation** — AI suggests responses, a human approves, before any autonomous sending is enabled. Trust is built gradually.
+- **Real knowledge base content** — policies, edge cases, and escalation thresholds built from actual support data, not placeholder examples
+- **Calibrated confidence thresholds** — set by reviewing a sample of real tickets, not a default value chosen in isolation
+- **QA sampling from day one** — automated random sampling of AI-assisted tickets for human review, with a scoring rubric
+- **Escalation rate as a key health metric** — if the AI is escalating too often or not enough, that is the first signal to act on
+- **Vendor and compliance sign-off** — data processing agreements and legal review of AI-generated customer communication before any live use
+- **Team training before rollout** — agents need to understand what the AI is doing, why it flags what it flags, and how to correct it
 
 ---
 
@@ -176,8 +226,8 @@ See [evaluation-criteria.md](evaluation-criteria.md) for full metric definitions
 
 ## Author
 
-**Alexandros Alexakis**
-Vendor Manager & L&D Lead | Player Care
+**Alexandros Alexakis**  
+Vendor Manager & L&D Lead | Player Care  
 [LinkedIn](https://www.linkedin.com/in/alexandros-alexakis/)
 
 ---
