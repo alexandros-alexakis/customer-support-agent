@@ -1,6 +1,8 @@
 # Case Studies — Support Operational Walkthroughs
 
-This document walks through eight realistic player support scenarios, showing the operational logic behind each triage decision. These are not just code outputs — they represent how a senior support professional thinks about each case: what matters, why, what happens next, and what the agent needs to do.
+This document walks through eight realistic player support scenarios. Each one shows how the system handles the case and, more importantly, the operational reasoning behind every decision.
+
+This is not documentation of code. It is documentation of how a senior support professional thinks through escalation, priority, tone, and agent guidance — and how that thinking is encoded into a system.
 
 ---
 
@@ -8,250 +10,252 @@ This document walks through eight realistic player support scenarios, showing th
 
 Each case shows:
 
-- **Incoming issue** — the player message as received
-- **Classification** — intent, tone, confidence, and flags
-- **Priority and SLA** — urgency level and expected response window
-- **Escalation path** — where the ticket goes and why
-- **Response strategy** — what the agent (or AI-assisted agent) should do
-- **Operational reasoning** — why these decisions were made
+- **The player message** — as received, before any human reads it
+- **What the system detects** — urgency, tone, intent, flags
+- **Priority and SLA** — how urgent this is and what the response window is
+- **Where it goes** — which team, and why
+- **What the agent is told** — tone guidance, what to collect, what not to say
+- **Operational reasoning** — the support logic behind the decision, explained plainly
 
 ---
 
-## Case 1: Refund request — within policy window
+## Case 1: "You charged me but nothing arrived"
 
-**Incoming issue:**
-> "I accidentally bought the wrong pack. I want a refund. It was 10 minutes ago."
-
-**Classification:**
-- Intent: `refund_request`
-- Confidence: 0.89
-- Tone: neutral
-- Flags: none
-
-**Priority and SLA:**
-- P3 — High
-- SLA: 8 hours
-
-**Escalation path:**
-- Route to: `billing`
-- Reason: refund requests require billing team review; agent cannot approve unilaterally
-
-**Response strategy:**
-- Collect: Player ID, transaction ID, purchase date, platform
-- Action: Acknowledge request, confirm the purchase details, advise the player that the request is being reviewed
-- Tone: Professional, efficient. Do not pre-approve or deny the refund in the initial response.
-
-**Operational reasoning:**
-Refund requests within a short window are legitimate service interactions, not complaints. Routing to billing protects both the player and the business — the agent acknowledges quickly without creating a false expectation of approval. What the agent should *not* do: delay the acknowledgement, make a unilateral decision, or ask for information that is unnecessary at this stage.
-
----
-
-## Case 2: Payment issue — charged but no delivery
-
-**Incoming issue:**
+**Player message:**
 > "I was charged £9.99 for coins but they never appeared in my account. Transaction ID: TXN-884521"
 
-**Classification:**
-- Intent: `payment_issue`
-- Confidence: 0.86
-- Tone: neutral
+**What the system detects:**
+- Issue type: payment problem with failed delivery
+- Urgency signals: confirmed charge, specific transaction ID provided
+- Tone: neutral — frustrated but not aggressive
 - Flags: none
 
 **Priority and SLA:**
 - P3 — High
-- SLA: 8 hours
+- 8-hour response window
 
-**Escalation path:**
-- Route to: `billing`
-- Reason: payment issues with a transaction ID are high priority and require backend verification
+**Where it goes:**
+- Billing team
+- Reason: a confirmed charge with a transaction ID is a financial dispute. Tier 1 cannot verify or reverse this. It goes to billing immediately.
 
-**Response strategy:**
-- Collect: Player ID, transaction ID, purchase date and amount, platform (iOS/Android/direct)
-- Action: Acknowledge, thank the player for providing the transaction ID, explain next steps
-- Tone: Professional. Do not suggest the charge will be reversed before verification.
+**What the agent is told:**
+- Collect: Player ID, transaction ID, purchase date and amount, platform (iOS / Android / web)
+- Tone: professional, efficient — the player has already done the work of providing the transaction ID. Acknowledge that and move.
+- Do not: suggest the refund will happen before verification. Do not ask for information the player has already given.
 
 **Operational reasoning:**
-This is one of the most common high-priority ticket types in gaming support. The player has already done the right thing by providing a transaction ID — the response should acknowledge that and move efficiently toward resolution. Delays here damage trust. The AI flags this for billing immediately rather than trying to resolve it through FAQ content.
+This is one of the highest-volume, highest-sensitivity ticket types in gaming support. The player is owed money or items — that is not a question. The question is verification. Getting this wrong in either direction — promising too much, or appearing to dismiss it — damages trust. The right move is a fast, professional acknowledgement that confirms the right team is on it.
 
 ---
 
-## Case 3: Lost progress — account rollback
+## Case 2: "All my progress is gone after the update"
 
-**Incoming issue:**
-> "I logged in this morning and all my progress from the last two weeks is gone. My level, my items, everything."
+**Player message:**
+> "I logged in this morning and everything from the last two weeks is gone. My level, my items, my purchases. It happened right after yesterday's update."
 
-**Classification:**
-- Intent: `lost_progress`
-- Confidence: 0.80
-- Tone: distressed
-- Flags: none
+**What the system detects:**
+- Issue type: lost progress, possible data corruption or failed sync
+- Urgency signals: recent update as a trigger, scope of loss is significant
+- Tone: distressed — not angry yet, but upset
+- Flags: possible wider incident if other players report the same
 
 **Priority and SLA:**
 - P3 — High
-- SLA: 8 hours
+- 8-hour response window
 
-**Escalation path:**
-- Route to: `technical_support`
-- Reason: progress loss may indicate a backend sync issue, account data corruption, or a wider incident
+**Where it goes:**
+- Technical support
+- Reason: progress loss tied to an update is a technical investigation, not an agent-resolvable issue. If multiple players report the same thing, this becomes an incident.
 
-**Response strategy:**
-- Collect: Player ID, platform, last login date before the issue, whether they use cloud save
-- Action: Acknowledge the loss clearly (do not minimise it), confirm the team will investigate
-- Tone: Empathetic but factual. Avoid vague reassurances. Do not promise data recovery.
+**What the agent is told:**
+- Collect: Player ID, platform, game version, last login before the issue, whether cloud save is enabled
+- Tone: empathetic and specific — acknowledge what was lost, not just that "something went wrong"
+- Do not: promise data recovery. Recovery may not be possible. Raising that expectation and then failing it is worse than not raising it.
 
 **Operational reasoning:**
-Lost progress is emotionally significant to players — it often represents real time and money. The agent's job in the first response is to validate that concern, collect what is needed to investigate, and not raise false hopes about recovery. If multiple players report the same issue in a short window, this may be an incident — the system flags low-confidence or unusual-volume cases for human review.
+Lost progress is emotionally significant. Players invest real time and often real money into their accounts. A response that treats this as routine will increase frustration. The agent's job in the first contact is to validate the experience, gather what is needed, and give an honest expectation of what comes next — not to fix it in one interaction.
 
 ---
 
-## Case 4: Account compromise — security concern
+## Case 3: VIP player threatening to quit
 
-**Incoming issue:**
-> "Someone has been in my account. There are purchases I didn't make and my email has been changed."
+**Player message:**
+> "I'm done. Uninstalling right now. I've spent a lot of money on this game and this is the thanks I get."
 
-**Classification:**
-- Intent: `account_compromise`
-- Confidence: 0.91
-- Tone: urgent
-- Flags: `security_flag`, `requires_human`
+**What the system detects:**
+- Issue type: churn risk — intent to leave
+- Urgency signals: VIP flag active, frustration about money spent, no specific issue stated
+- Tone: angry, resigned
+- Flags: VIP player, churn risk
 
 **Priority and SLA:**
 - P1 — Critical
-- SLA: 1 hour
+- 30-minute response window
 
-**Escalation path:**
-- Route to: `trust_and_safety`
-- Reason: account compromise with unauthorised purchases requires identity verification and account lockdown before any other action
+**Where it goes:**
+- Player relations
+- Reason: VIP churn is a revenue and relationship event. A templated first-contact response makes this worse. This needs a personalised, senior-voice response from someone who has the player's account history in front of them.
 
-**Response strategy:**
-- Collect: Do not collect sensitive information over chat. Direct the player to the secure account recovery flow.
-- Action: Acknowledge immediately, advise the player to change their password if they still have access, confirm the case has been escalated to the security team
-- Tone: Calm, reassuring, clear. Do not ask for passwords or payment details.
+**What the agent is told:**
+- Before responding: review the player's recent support history and purchase history. Understand what has happened before the first word is written.
+- Tone: personalised, warm, not defensive
+- Do not: send a template. Do not respond without knowing the account context. Do not treat this as a standard complaint.
 
 **Operational reasoning:**
-This case cannot be handled by Tier 1 under any circumstances. Identity verification must happen through a secure channel before anything is disclosed or changed on the account. The AI's job here is to act fast, escalate, and ensure the first-contact response does not make things worse — for example, by disclosing account information to someone who may be the attacker.
+When a high-value player expresses intent to leave, the underlying issue is rarely stated clearly in the message. Something built up over time. The agent's job is to find out what it was and address it — not to respond to the surface-level message. The 30-minute SLA is not about speed for its own sake. It is about catching the player before the decision solidifies.
 
 ---
 
-## Case 5: Abusive player
+## Case 4: "I'll do a chargeback if this isn't fixed"
 
-**Incoming issue:**
-> "You are all completely useless. I've been waiting 3 days. Fix this NOW or I'll make sure everyone knows how terrible you are."
+**Player message:**
+> "I've been waiting four days for a response about my missing items. If I don't hear back today I'm disputing the charge with my bank."
 
-**Classification:**
-- Intent: `payment_issue` (inferred from context)
-- Confidence: 0.55
-- Tone: aggressive
-- Flags: `repeat_contact`, `abusive_language`
-
-**Priority and SLA:**
-- P4 — Urgent
-- SLA: 4 hours
-
-**Escalation path:**
-- Route to: `senior_agent`
-- Reason: abusive tone + repeat contact + low confidence on underlying issue requires experienced handling
-
-**Response strategy:**
-- Collect: Do not demand information in the opening response. Acknowledge the wait first.
-- Action: De-escalate. Acknowledge the delay directly. Do not apologise in a way that implies fault without knowing the facts. Request the information needed to investigate.
-- Tone: Calm, professional, non-defensive. Do not match the player's tone. Do not threaten or warn the player in the first response.
-
-**Operational reasoning:**
-This is a case where the AI correctly routes to a senior agent rather than generating an automated response. The underlying issue is unclear, the player is agitated, and a poorly worded response here can inflame the situation further. The AI's value is in getting this to the right person quickly and providing the agent with context — not in attempting to resolve it autonomously.
-
----
-
-## Case 6: VIP churn risk
-
-**Incoming issue:**
-> "I'm done. Uninstalling. This is a waste of money and the support is a joke."
-
-**Classification:**
-- Intent: `churn_risk`
-- Confidence: 0.75
-- Tone: angry
-- Flags: `vip_player`, `churn_risk`
-
-**Priority and SLA:**
-- P1 — Critical
-- SLA: 30 minutes
-
-**Escalation path:**
-- Route to: `player_relations`
-- Reason: VIP player expressing intent to leave requires proactive, personalised outreach — not a templated response
-
-**Response strategy:**
-- Collect: Identify the underlying issue from the contact history before responding
-- Action: Escalate immediately to player_relations. Do not send an automated response. Ensure the assigned agent has the player's account history before making contact.
-- Tone: Personalised, senior-voice. Generic apologies will make this worse.
-
-**Operational reasoning:**
-VIP churn is a revenue and relationship issue, not just a support ticket. The system flags this at P1 regardless of whether the underlying complaint is resolved, because the churn signal is itself the priority. A 30-minute SLA means a human is assigned quickly — the AI's role is to make sure that human has everything they need when they pick it up.
-
----
-
-## Case 7: Bug report — reproducible crash
-
-**Incoming issue:**
-> "Every time I try to open the tournament mode the game crashes. It's been happening since the update yesterday. iPhone 13, iOS 17."
-
-**Classification:**
-- Intent: `bug_report`
-- Confidence: 0.83
-- Tone: neutral
-- Flags: none
-
-**Priority and SLA:**
-- P3 — High
-- SLA: 8 hours
-
-**Escalation path:**
-- Route to: `technical_support`
-- Reason: reproducible crash with specific device and version data should be logged and passed to the technical team
-
-**Response strategy:**
-- Collect: Device model, OS version, game version, steps to reproduce, frequency, whether a restart resolved it temporarily
-- Action: Acknowledge, thank the player for the detail they have already provided, confirm the issue will be investigated, provide a workaround if one exists in the knowledge base
-- Tone: Helpful and methodical. Players who submit detailed bug reports are engaged users — treat them accordingly.
-
-**Operational reasoning:**
-A well-reported bug is an asset. The response should acknowledge the quality of the report and make it easy for the player to provide any missing information. Internally, this should be logged in a way that allows the technical team to identify if other players are reporting the same issue.
-
----
-
-## Case 8: Ban appeal
-
-**Incoming issue:**
-> "My account was banned but I didn't do anything wrong. I've spent hundreds of pounds on this game and this is how I get treated? If my account isn't restored I'm contacting my lawyer."
-
-**Classification:**
-- Intent: `ban_appeal`
-- Confidence: 0.88
+**What the system detects:**
+- Issue type: unresolved payment issue with chargeback threat
+- Urgency signals: four-day wait, financial threat, no prior resolution
 - Tone: threatening
-- Flags: `ban_appeal`, `legal_threat`
+- Flags: chargeback threat, repeat contact on unresolved issue
 
 **Priority and SLA:**
 - P1 — Critical
-- SLA: 30 minutes
+- 1-hour response window
 
-**Escalation path:**
-- Route to: `legal_compliance` (legal_threat override)
-- Secondary: `trust_and_safety` for ban review
-- Reason: legal threat triggers immediate escalation regardless of the underlying ban status
+**Where it goes:**
+- Billing team + senior agent flag
+- Reason: a chargeback threat is a financial and reputational risk. If the chargeback proceeds, it costs the business more than the original transaction. This needs resolution, not a holding response.
 
-**Response strategy:**
-- Action: Acknowledge receipt of the appeal. Do not discuss the ban details, the reason for it, or respond to the legal threat directly. Inform the player that their case has been escalated and they will receive a formal response.
-- Collect: Nothing in this response. Evidence collection happens in the escalated review.
-- Tone: Formal, calm, non-confrontational. Do not engage with the legal threat.
+**What the agent is told:**
+- Collect: original ticket reference, transaction ID if not already held, platform
+- Tone: calm, direct, solution-focused — the player is frustrated by a wait, not by the original issue alone. Acknowledge the wait explicitly.
+- Do not: lecture the player about chargeback policy. Do not make them feel like a threat. Find the original issue and resolve it.
 
 **Operational reasoning:**
-Ban appeals are out of scope for Tier 1 regardless of the circumstances. When a legal threat is also present, the case must go to legal_compliance before any substantive response is written. The first-contact response should be minimal: acknowledge, escalate, confirm a timeline. Saying too much here creates liability. Saying nothing creates the appearance of ignoring the player. The goal is a brief, professional holding response that moves the case to the right team immediately.
+Chargebacks are expensive and avoidable in most cases. When a player threatens one, they have usually already tried to resolve the issue through normal channels and been failed. The escalation here is not because the player is difficult — it is because the system previously failed them. The agent needs to own that and move fast.
 
 ---
 
-## What these cases demonstrate
+## Case 5: "This is the third time I've contacted you" — legal threat
 
-Across these eight scenarios, the pattern is consistent: the AI engine's job is to **classify, prioritise, and route** — not to resolve. Resolution requires human judgment in almost every case above. The system is designed to make sure the right human has the right context at the right time, not to replace them.
+**Player message:**
+> "This is the THIRD time. I am done being ignored. If my account is not restored by tomorrow I am contacting my solicitor."
 
-The support logic reflected here — when to escalate, how to collect information without alienating the player, how to handle tone, what not to say in a first response — comes from direct experience managing player care operations, not from engineering documentation.
+**What the system detects:**
+- Issue type: unresolved account issue, repeat contact
+- Urgency signals: third contact, legal threat, prior resolution failure
+- Tone: threatening
+- Flags: legal threat, repeat contact, prior resolution failed
+
+**Priority and SLA:**
+- P1 — Critical
+- 30-minute response window
+
+**Where it goes:**
+- Legal compliance team
+- Secondary: senior agent for account investigation
+- Reason: a legal threat overrides all other routing. The response must be reviewed before it goes out.
+
+**What the agent is told:**
+- Tone: formal, calm, no engagement with the legal threat at all
+- Opening: acknowledge the number of contacts directly. Do not open with a generic greeting.
+- Do not: mention the legal threat. Do not discuss what legal action would or would not achieve. Do not make commitments. Inform the player their case has been escalated and they will receive a formal response.
+- Collect: nothing in this response. That happens in the investigation.
+
+**Operational reasoning:**
+When a player mentions legal action, the job of the first response changes. It is no longer about resolving the issue — it is about not making the situation worse. Anything said here may be quoted. The response needs to be short, professional, and focused only on confirming escalation. The investigation happens in parallel, not in the reply thread.
+
+---
+
+## Case 6: "My account was hacked"
+
+**Player message:**
+> "Someone has accessed my account. There are purchases I did not make and my email address has been changed to one I don't recognise."
+
+**What the system detects:**
+- Issue type: account compromise — unauthorised access and purchases
+- Urgency signals: email changed by third party, unauthorised transactions
+- Tone: urgent, alarmed
+- Flags: security flag, requires immediate human review
+
+**Priority and SLA:**
+- P1 — Critical
+- 1-hour response window
+
+**Where it goes:**
+- Trust & Safety
+- Reason: this is a security incident. Account actions, information disclosure, and any recovery steps must go through identity verification — not a Tier 1 chat exchange.
+
+**What the agent is told:**
+- Tone: calm and reassuring — the player is alarmed
+- Action: direct the player to the secure account recovery flow. Do not attempt to process this in chat.
+- Do not: ask for passwords, payment details, or personal identification in chat. Do not confirm or deny any account information to the person contacting — you cannot verify their identity yet. Do not take any account actions until identity is confirmed.
+
+**Operational reasoning:**
+Account compromise cases carry real risk in both directions. If the person contacting is the legitimate account holder, they need fast, calm help. If the person contacting is the attacker, any information disclosed makes the situation worse. The first response must do both: reassure and redirect without revealing anything. Identity verification through a secure channel is non-negotiable before anything else happens.
+
+---
+
+## Case 7: "My ban was unfair" — ban appeal
+
+**Player message:**
+> "My account was banned but I didn't do anything wrong. I've spent hundreds of pounds on this game. I want this reviewed immediately."
+
+**What the system detects:**
+- Issue type: ban appeal
+- Urgency signals: financial investment mentioned, demand for immediate review
+- Tone: indignant
+- Flags: ban appeal — out of scope for Tier 1
+
+**Priority and SLA:**
+- P2 — Urgent
+- 4-hour response window
+
+**Where it goes:**
+- Trust & Safety — ban review team
+- Reason: ban appeals require access to account history, moderation logs, and enforcement policy. Tier 1 agents cannot and should not make decisions about enforcement.
+
+**What the agent is told:**
+- Tone: professional, neutral — not sympathetic in a way that implies the ban was wrong before it has been reviewed
+- Action: acknowledge the appeal, confirm it has been escalated to the review team, provide a realistic timeframe
+- Do not: comment on whether the ban seems fair. Do not ask the player to explain what they did. Do not imply the ban will be overturned. Do not let the mention of money spent influence the tone.
+
+**Operational reasoning:**
+Ban appeals are sensitive because both outcomes are possible — the ban may have been correct, or it may have been a false positive. The first-contact response cannot presuppose either. The agent's job is to confirm the appeal is being reviewed fairly and that the player will receive a proper answer. Anything beyond that creates expectations that the review team may not be able to meet.
+
+---
+
+## Case 8: Crash on a specific feature — bug report
+
+**Player message:**
+> "Every time I try to open the tournament mode the game crashes. It's been happening since the update yesterday. iPhone 13, iOS 17.2, game version 4.1.1."
+
+**What the system detects:**
+- Issue type: reproducible crash, possible regression from recent update
+- Urgency signals: tied to a specific update, specific device and version information provided
+- Tone: neutral — informative, not angry
+- Flags: none
+
+**Priority and SLA:**
+- P3 — High
+- 8-hour response window
+
+**Where it goes:**
+- Technical support
+- Reason: a reproducible crash with device and version data is a bug report that needs to reach the technical team. If other players are reporting the same issue on the same update, this could be a widespread regression.
+
+**What the agent is told:**
+- Tone: efficient and appreciative — this player gave detailed, useful information. Acknowledge that.
+- Collect: steps to reproduce, whether a reinstall or restart temporarily resolved it, any error message displayed
+- Action: check the knowledge base for a known workaround. If one exists, provide it. Either way, log the report formally so the technical team can identify if this is affecting multiple players.
+- Do not: suggest this is a device problem before investigation. Do not ask for information the player has already provided.
+
+**Operational reasoning:**
+A player who submits a detailed bug report with device specs and version numbers is doing the technical team a favour. The response should reflect that. Treating them like a standard complaint rather than a useful reporter damages the relationship and reduces the chance they will report the next issue they find. Internally, this case should be cross-referenced against other recent reports from the same game version.
+
+---
+
+## What these cases have in common
+
+Across all eight scenarios, the system is doing the same thing: reading the incoming message, detecting what matters most about it, and making sure the right human has the right information before they respond.
+
+The triage logic here — when to escalate, what to collect, what tone to take, what not to say in a first response — comes from direct experience managing player care operations. That is what this project is built to demonstrate.
