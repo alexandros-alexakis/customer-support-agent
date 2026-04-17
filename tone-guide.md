@@ -82,5 +82,3 @@ When a player writes in a language other than English:
 - The agent detects the player's language automatically and adjusts the response accordingly (see `multilingual/README.md`)
 - Use shorter, simpler sentences regardless of language
 - Avoid idioms and colloquial expressions, especially in translation-heavy languages
-
-> **Note:** An earlier version of this guide required English-only responses. That policy has been superseded. Multilingual response is now the approved standard.
