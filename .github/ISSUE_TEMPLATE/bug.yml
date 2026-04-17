@@ -1,0 +1,46 @@
+name: Bug
+description: The engine does something it should not, or fails to do something it should.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Use this for code-level issues. If the knowledge base is missing something, use the KB Gap template instead.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did the system do that it should not have done?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: Input message, flags used (VIP, contact count, etc.), and run mode (mock or LLM).
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Which component?
+      options:
+        - classifier
+        - prioritizer
+        - escalation
+        - response_router
+        - rag / retriever
+        - pipeline
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Logs, screenshots, or anything else useful.

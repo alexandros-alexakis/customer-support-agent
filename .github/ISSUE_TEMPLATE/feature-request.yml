@@ -1,0 +1,41 @@
+name: Feature Request
+description: Something the system does not do but should.
+labels: ["feature-request"]
+body:
+  - type: markdown
+    attributes:
+      value: Feature requests go into the roadmap. They are not bugs.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What do you want the system to do?
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What support problem does this solve?
+      description: Describe the operational scenario this would help with.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example
+      description: A concrete player message or situation where this would make a difference.
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - triage engine
+        - escalation logic
+        - knowledge base
+        - learning loop
+        - evaluation
+        - integrations
+        - other
+    validations:
+      required: true
