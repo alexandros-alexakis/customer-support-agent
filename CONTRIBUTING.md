@@ -82,4 +82,4 @@ The gap between a working local prototype and a live production system is real. 
 
 ## Contact
 
-Open an issue on GitHub for questions or discussions.
+For questions or discussions, connect via [LinkedIn](https://www.linkedin.com/in/alexandros-alexakis/) or open an issue on GitHub.

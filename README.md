@@ -8,6 +8,8 @@ A structured prototype for a Tier 1 customer support assistant, designed for gam
 
 This project documents the design logic, decision rules, knowledge base, escalation framework, and evaluation criteria for a prompt-driven AI support assistant built on Claude (Anthropic). It includes a working Python classification engine for ticket triage.
 
+Built by **Alexandros Alexakis**, Vendor Manager & L&D Lead.
+
 ---
 
 ## What this is not
@@ -169,6 +171,14 @@ make eval
 - CSAT by ticket complexity band
 
 See [evaluation-criteria.md](evaluation-criteria.md) for full metric definitions and [evaluation/failure-analysis.md](evaluation/failure-analysis.md) for known failure modes.
+
+---
+
+## Author
+
+**Alexandros Alexakis**
+Vendor Manager & L&D Lead | Player Care
+[LinkedIn](https://www.linkedin.com/in/alexandros-alexakis/)
 
 ---
 
