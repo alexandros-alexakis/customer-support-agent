@@ -116,26 +116,6 @@ See [CASE-STUDIES.md](CASE-STUDIES.md) for full operational walkthroughs. Summar
 
 ---
 
-## Why this matters for hiring managers
-
-Depending on the role you are hiring for, here is what this project directly demonstrates:
-
-**Support leadership / Player care management**
-How I structure a support operation around AI assistance. What I measure. What I protect from automation. How I'd set up escalation paths and SLA targets. How I think about the gap between what AI can do and what it should do.
-
-**Vendor management**
-How I'd specify AI tooling requirements for a vendor. What I'd include in a statement of work. How I'd define quality standards and hold a vendor accountable: escalation accuracy, scope compliance, CSAT by ticket complexity.
-
-**L&D and training**
-How I'd train agents to work alongside AI. What they need to understand about how the system makes decisions. What they need to be able to override. How I'd build a QA rubric for AI-assisted interactions.
-
-**AI operations / Support automation**
-How I think about AI adoption in a support environment. Not just what AI can do, but what it should do, what it should never do, and how you know if it is working. Agent assist before full automation. Gradual rollout. Escalation rate as a health signal.
-
-**The one-line version:** this repo exists to prove that I can design how AI should behave in a support operation, not just ask an engineer to build something.
-
----
-
 ## Documentation
 
 | Guide | What it covers |
