@@ -1,14 +1,14 @@
-# Player Care AI — Support Operations Prototype
+# Player Care AI: Support Operations Prototype
 
 ![Project Banner](banner.png)
 
 ---
 
-> **This project reflects my professional background in support operations, escalation design, quality assurance, and team training. It explores how AI can assist these workflows in a gaming player care environment — and where it cannot.**
+> **This project reflects my professional background in support operations, escalation design, quality assurance, and team training. It explores how AI can assist these workflows in a gaming player care environment, and where it cannot.**
 >
 > This is not a software engineering project. It is a support operations design project that uses code to make the logic runnable and testable.
 >
-> — **Alexandros Alexakis**, Vendor Manager & L&D Lead — Player Care
+> **Alexandros Alexakis**, Vendor Manager and L&D Lead, Player Care
 
 ---
 
@@ -16,7 +16,7 @@
 
 A working prototype for a Tier 1 player support assistant in a gaming environment.
 
-The system detects urgency, identifies VIP players, reads negative sentiment, spots legal threats, and routes tickets to the right team — billing, technical support, trust and safety, player relations, or legal compliance — before any human has to read the message.
+The system detects urgency, identifies VIP players, reads negative sentiment, spots legal threats, and routes tickets to the right team: billing, technical support, trust and safety, player relations, or legal compliance, before any human has to read the message.
 
 It includes:
 - A rules-based triage engine that runs without an API key
@@ -24,7 +24,7 @@ It includes:
 - A system prompt that governs how the AI responds when Claude is connected
 - Evaluation criteria, QA thinking, and a Zendesk integration guide
 
-Built by a support operations professional to demonstrate how AI can be designed to serve a support team — not to replace it.
+Built by a support operations professional to demonstrate how AI can be designed to serve a support team, not to replace it.
 
 ---
 
@@ -42,19 +42,19 @@ This is a **policy-driven prototype**. Every decision it makes is a recommendati
 
 ## What a support team would actually use this for
 
-When a player contacts support, the agent currently has to read the message, decide how urgent it is, figure out who should handle it, and work out what information to collect — before writing a single word of response. On a busy queue, that cognitive load compounds across hundreds of tickets a day.
+When a player contacts support, the agent currently has to read the message, decide how urgent it is, figure out who should handle it, and work out what information to collect, before writing a single word of response. On a busy queue, that cognitive load compounds across hundreds of tickets a day.
 
 This system handles the intake layer:
 
 | What the system does | Example |
 |---|---|
-| Detects urgency and assigns a priority level | Angry VIP with a failed payment → P1, 30-minute SLA |
-| Identifies threatening or distressed tone | "I'm taking legal action" → flags immediately, routes to compliance |
-| Recognises VIP players and raises priority | VIP expressing churn intent → escalates to player relations before a generic reply goes out |
-| Spots known high-risk patterns | Third contact on an unresolved issue → flags for senior agent, not Tier 1 |
-| Routes to the right team without manual reading | Account compromise → Trust & Safety, not billing |
-| Tells the agent what to collect before they ask | Payment issue → collect transaction ID, platform, purchase date |
-| Suggests a response tone and opening | Legal threat → calm, formal, no engagement with the threat |
+| Detects urgency and assigns a priority level | Angry VIP with a failed payment -> P1, 30-minute SLA |
+| Identifies threatening or distressed tone | "I'm taking legal action" -> flags immediately, routes to compliance |
+| Recognises VIP players and raises priority | VIP expressing churn intent -> escalates to player relations before a generic reply goes out |
+| Spots known high-risk patterns | Third contact on an unresolved issue -> flags for senior agent, not Tier 1 |
+| Routes to the right team without manual reading | Account compromise -> Trust & Safety, not billing |
+| Tells the agent what to collect before they ask | Payment issue -> collect transaction ID, platform, purchase date |
+| Suggests a response tone and opening | Legal threat -> calm, formal, no engagement with the threat |
 
 The agent opens the ticket and already knows: urgency, team, what to ask, and how to open. That is the operational value.
 
@@ -95,7 +95,7 @@ This section matters. Good AI support design is not about maximising automation.
 - Refund approvals
 - Any response where being wrong creates legal, financial, or safety risk
 
-The AI does not send messages to players. It prepares a recommendation — triage result, suggested response, information to collect — and a human agent reviews it before anything reaches the player.
+The AI does not send messages to players. It prepares a recommendation: triage result, suggested response, information to collect, and a human agent reviews it before anything reaches the player.
 
 ---
 
@@ -124,7 +124,7 @@ Depending on the role you are hiring for, here is what this project directly dem
 How I structure a support operation around AI assistance. What I measure. What I protect from automation. How I'd set up escalation paths and SLA targets. How I think about the gap between what AI can do and what it should do.
 
 **Vendor management**
-How I'd specify AI tooling requirements for a vendor. What I'd include in a statement of work. How I'd define quality standards and hold a vendor accountable — escalation accuracy, scope compliance, CSAT by ticket complexity.
+How I'd specify AI tooling requirements for a vendor. What I'd include in a statement of work. How I'd define quality standards and hold a vendor accountable: escalation accuracy, scope compliance, CSAT by ticket complexity.
 
 **L&D and training**
 How I'd train agents to work alongside AI. What they need to understand about how the system makes decisions. What they need to be able to override. How I'd build a QA rubric for AI-assisted interactions.
@@ -132,7 +132,7 @@ How I'd train agents to work alongside AI. What they need to understand about ho
 **AI operations / Support automation**
 How I think about AI adoption in a support environment. Not just what AI can do, but what it should do, what it should never do, and how you know if it is working. Agent assist before full automation. Gradual rollout. Escalation rate as a health signal.
 
-**The one-line version:** this repo exists to prove that I can design how AI should behave in a support operation — not just ask an engineer to build something.
+**The one-line version:** this repo exists to prove that I can design how AI should behave in a support operation, not just ask an engineer to build something.
 
 ---
 
@@ -222,7 +222,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full breakdown and [HOW-IT-WORKS.
 | LLM | `ANTHROPIC_API_KEY` in `.env` | API credits | Real Claude response grounded in the knowledge base |
 
 ```bash
-# Mock mode (default — no API key needed)
+# Mock mode (no API key needed)
 python run_agent.py --demo
 
 # LLM mode
@@ -301,7 +301,7 @@ See [evaluation-criteria.md](evaluation-criteria.md) for metric definitions and 
 ## Author
 
 **Alexandros Alexakis**  
-Vendor Manager & L&D Lead | Player Care  
+Vendor Manager and L&D Lead | Player Care  
 [LinkedIn](https://www.linkedin.com/in/alexandros-alexakis/)
 
 ---
