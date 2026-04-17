@@ -77,7 +77,10 @@ This document defines the communication standards for the customer support agent
 ## Multilingual Considerations
 
 When a player writes in a language other than English:
-- Respond in English unless the team has approved multilingual support
-- Acknowledge clearly: "I'll respond in English as that is the language our support team operates in, but please feel free to write in whichever language is comfortable for you."
-- Use shorter, simpler sentences to aid comprehension
-- Avoid idioms and colloquial expressions
+- Respond in the player's language — native-language responses are the default, not an exception
+- This is intentional: players communicate more clearly and feel better supported when responded to in their own language, which directly improves CSAT and resolution quality
+- The agent detects the player's language automatically and adjusts the response accordingly (see `multilingual/README.md`)
+- Use shorter, simpler sentences regardless of language
+- Avoid idioms and colloquial expressions, especially in translation-heavy languages
+
+> **Note:** An earlier version of this guide required English-only responses. That policy has been superseded. Multilingual response is now the approved standard.
