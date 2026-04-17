@@ -1,8 +1,6 @@
 # Case Studies: Support Operational Walkthroughs
 
-This document walks through eight realistic player support scenarios. Each one shows how the system handles the case and, more importantly, the operational reasoning behind every decision.
-
-This is not documentation of code. It is documentation of how a senior support professional thinks through escalation, priority, tone, and agent guidance, and how that thinking is encoded into a system.
+This document walks through eight realistic player support scenarios. Each one shows how the system handles the case and the operational reasoning behind every decision.
 
 ---
 
@@ -251,11 +249,3 @@ Ban appeals are sensitive because both outcomes are possible. The ban may have b
 
 **Operational reasoning:**
 A player who submits a detailed bug report with device specs and version numbers is doing the technical team a favour. The response should reflect that. Treating them like a standard complaint rather than a useful reporter damages the relationship and reduces the chance they will report the next issue they find. Internally, this case should be cross-referenced against other recent reports from the same game version.
-
----
-
-## What these cases have in common
-
-Across all eight scenarios, the system is doing the same thing: reading the incoming message, detecting what matters most about it, and making sure the right human has the right information before they respond.
-
-The triage logic here, when to escalate, what to collect, what tone to take, what not to say in a first response, comes from direct experience managing player care operations. That is what this project is built to demonstrate.

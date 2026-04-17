@@ -24,7 +24,7 @@ It includes:
 - A system prompt that governs how the AI responds when Claude is connected
 - Evaluation criteria, QA thinking, and a Zendesk integration guide
 
-Built by a support operations professional to demonstrate how AI can be designed to serve a support team, not to replace it.
+Built by a support operations professional with a background in player care and vendor management.
 
 ---
 
