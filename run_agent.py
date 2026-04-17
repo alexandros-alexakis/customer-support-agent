@@ -52,6 +52,8 @@ def assemble_prompt(
     player_message: str,
     strategy,
     rag_context: str = "",
+    account_context: str = "",
+    session_history: list = None,
 ) -> str:
     """
     Assemble the full prompt sent to the LLM.
@@ -70,9 +72,18 @@ def assemble_prompt(
     # Truncate for display - full prompt goes to LLM
     parts.append(system_prompt[:500] + "... [truncated for display]")
 
+    if account_context:
+        parts.append("\n=== PLAYER ACCOUNT CONTEXT ===")
+        parts.append(account_context)
+
     if rag_context:
         parts.append("\n=== KNOWLEDGE BASE CONTEXT ===")
         parts.append(rag_context[:400] + "... [truncated for display]" if len(rag_context) > 400 else rag_context)
+
+    if session_history:
+        parts.append("\n=== CONVERSATION HISTORY ===")
+        for turn in session_history:
+            parts.append(f"{turn['role'].upper()}: {turn['content'][:200]}")
 
     parts.append("\n=== RESPONSE STRATEGY ===")
     parts.append(f"Tone: {strategy.tone_instruction}")
@@ -83,11 +94,18 @@ def assemble_prompt(
     parts.append("\n=== PLAYER MESSAGE ===")
     parts.append(player_message)
 
+    history_block = ""
+    if session_history:
+        lines = [f"{t['role'].upper()}: {t['content']}" for t in session_history]
+        history_block = "CONVERSATION HISTORY:\n" + "\n".join(lines) + "\n\n"
+
     # The actual prompt sent to LLM uses the FULL system prompt, not truncated
     full_prompt = (
         system_prompt
         + "\n\n"
+        + (f"{account_context}\n\n" if account_context else "")
         + (f"KNOWLEDGE BASE CONTEXT:\n{rag_context}\n\n" if rag_context else "")
+        + history_block
         + f"RESPONSE GUIDANCE:\nTone: {strategy.tone_instruction}\nAction: {strategy.action}\n\n"
         + f"PLAYER MESSAGE:\n{player_message}"
     )
@@ -186,15 +204,44 @@ def print_trace(message, contact_count, is_vip, result, display_prompt, response
     print()
 
 
-def run_agent(message: str, contact_count: int = 1, is_vip: bool = False):
+def run_agent(message: str, contact_count: int = 1, is_vip: bool = False, use_session: bool = False):
     """Run a single message through the full agent pipeline."""
+    player_id = "interactive_session"
+
+    # Load account context
+    account_block = ""
+    try:
+        from player.account_provider import get_account_context, format_account_context_for_prompt
+        account_ctx = get_account_context(player_id)
+        if account_ctx:
+            account_block = format_account_context_for_prompt(account_ctx)
+    except Exception:
+        pass
+
+    # Load session history
+    session_history = []
+    if use_session:
+        try:
+            from memory.session_store import get_history_for_prompt
+            session_history = get_history_for_prompt(player_id)
+        except Exception:
+            pass
 
     # Step 1-5: Triage engine (all rules-based, no LLM)
+    from dataclasses import asdict
+    account_dict = None
+    try:
+        if account_ctx:
+            account_dict = asdict(account_ctx)
+    except Exception:
+        pass
+
     ctx = TicketContext(
         message=message,
-        player_id="interactive_session",
+        player_id=player_id,
         contact_count=contact_count,
         is_vip=is_vip,
+        account_context=account_dict,
     )
     result = run(ctx)
 
@@ -209,6 +256,8 @@ def run_agent(message: str, contact_count: int = 1, is_vip: bool = False):
         player_message=message,
         strategy=result.strategy,
         rag_context=rag_context,
+        account_context=account_block,
+        session_history=session_history,
     )
 
     # Step 7: Generate response (LLM or mock)
@@ -216,6 +265,15 @@ def run_agent(message: str, contact_count: int = 1, is_vip: bool = False):
         prompt=full_prompt,
         intent=result.classification.intent.value,
     )
+
+    # Save turns to session if enabled
+    if use_session:
+        try:
+            from memory.session_store import append_turn
+            append_turn(player_id, "user", message)
+            append_turn(player_id, "assistant", response)
+        except Exception:
+            pass
 
     # Print full trace
     print_trace(
@@ -281,6 +339,12 @@ def main():
         default=False,
         help="Run with a preset demo message instead of prompting for input",
     )
+    parser.add_argument(
+        "--session",
+        action="store_true",
+        default=False,
+        help="Enable conversation memory — persists history between runs",
+    )
 
     args = parser.parse_args()
 
@@ -295,7 +359,7 @@ def main():
     else:
         message, contact_count, is_vip = get_input_interactive()
 
-    run_agent(message, contact_count, is_vip)
+    run_agent(message, contact_count, is_vip, use_session=args.session)
 
 
 if __name__ == "__main__":

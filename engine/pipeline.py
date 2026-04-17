@@ -1,6 +1,7 @@
 import time
 import logging
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
+from typing import Optional
 from engine.classifier import classify, ClassificationResult
 from engine.prioritizer import prioritize, PriorityResult
 from engine.escalation import evaluate_escalation, EscalationResult
@@ -16,6 +17,8 @@ class TicketContext:
     contact_count: int = 1
     is_vip: bool = False
     prior_resolution_attempted: bool = False
+    account_context: Optional[dict] = None
+    incident_id: Optional[str] = None
 
 
 @dataclass
@@ -115,6 +118,27 @@ def run(context: TicketContext) -> PipelineResult:
             "requires_human": classification.requires_human,
         },
     )
+
+    try:
+        from feedback.incident_detector import record_ticket_for_correlation
+        incident = record_ticket_for_correlation(
+            player_id=context.player_id,
+            intent=classification.intent.value,
+            message=context.message,
+            ticket_id=context.player_id,
+        )
+        if incident:
+            context.incident_id = incident.incident_id
+            logger.warning(
+                "incident_detected",
+                extra={
+                    "incident_id": incident.incident_id,
+                    "intent": classification.intent.value,
+                    "count": incident.ticket_count,
+                },
+            )
+    except Exception as e:
+        logger.error("incident_detection_failed", extra={"error": str(e)})
 
     return PipelineResult(
         player_id=context.player_id,

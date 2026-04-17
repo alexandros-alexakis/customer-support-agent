@@ -1,7 +1,7 @@
 from pathlib import Path
 import chromadb
 from chromadb.utils import embedding_functions
-from rag.kb_sync import CHROMA_PATH, COLLECTION_NAME, EMBEDDING_MODEL
+from rag.kb_sync import CHROMA_PATH, COLLECTION_NAME, EMBEDDING_MODEL, chunk_markdown
 
 
 DEFAULT_TOP_K = 3
@@ -96,3 +96,60 @@ def retrieve_and_format(query: str, top_k: int = DEFAULT_TOP_K) -> tuple[str, li
     results = retrieve(query, top_k=top_k)
     context = format_context(results)
     return context, results
+
+
+_LANG_CODE_MAP = {
+    "Spanish": "es", "French": "fr", "German": "de",
+    "Russian": "ru", "Turkish": "tr", "Portuguese": "pt",
+    "Italian": "it", "Polish": "pl", "Dutch": "nl",
+    "Japanese": "ja", "Korean": "ko", "Chinese": "zh",
+}
+
+
+def retrieve_in_language(
+    query: str,
+    language: str,
+    top_k: int = DEFAULT_TOP_K,
+) -> tuple[str, list[dict]]:
+    """
+    Retrieve KB content in the player's detected language.
+    Falls back to English retrieval if translations are not available.
+    """
+    lang_code = _LANG_CODE_MAP.get(language)
+    if not lang_code:
+        return retrieve_and_format(query, top_k=top_k)
+
+    translations_dir = Path(__file__).parent.parent / "knowledge-base" / "translations" / lang_code
+    if not translations_dir.exists() or not any(translations_dir.glob("*.md")):
+        return retrieve_and_format(query, top_k=top_k)
+
+    query_lower = query.lower()
+    query_terms = [t for t in query_lower.split() if len(t) > 2]
+
+    scored: list[tuple[float, dict]] = []
+
+    for md_file in translations_dir.glob("*.md"):
+        try:
+            with open(md_file, "r", encoding="utf-8") as f:
+                content = f.read()
+            chunks = chunk_markdown(content, md_file.name)
+            for chunk in chunks:
+                text_lower = chunk["text"].lower()
+                hits = sum(1 for term in query_terms if term in text_lower)
+                if hits > 0:
+                    score = hits / max(len(query_terms), 1)
+                    scored.append((score, {
+                        "text": chunk["text"],
+                        "source": f"translations/{lang_code}/{md_file.name}",
+                        "section": chunk["metadata"].get("section", ""),
+                        "score": round(score, 3),
+                    }))
+        except Exception:
+            continue
+
+    if not scored:
+        return retrieve_and_format(query, top_k=top_k)
+
+    scored.sort(key=lambda x: x[0], reverse=True)
+    results = [item for _, item in scored[:top_k]]
+    return format_context(results), results
