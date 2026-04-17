@@ -49,11 +49,11 @@ This is a **policy-driven support assistant prototype**. The assistant responds 
 ## Quickstart
 
 ```bash
-git clone https://github.com/alexandros-alexakis/customer-support-agent.git
-cd customer-support-agent
+git clone https://github.com/alexandros-alexakis/ai-customer-support-agent.git
+cd ai-customer-support-agent
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-python example_run.py
+python run_agent.py --demo
 ```
 
 Or with Make:
@@ -61,8 +61,7 @@ Or with Make:
 ```bash
 make setup
 source venv/bin/activate
-make sync-kb
-make run
+make agent-demo
 ```
 
 See [QUICKSTART.md](QUICKSTART.md) for expected output and what the demo proves.
@@ -87,6 +86,9 @@ Incoming ticket
  engine/response_router.py # Response strategy for agent or LLM
       |
       v
+ llm_client.py             # LLM wrapper (mock or real Claude API)
+      |
+      v
  system-prompt.md          # Governs LLM response behavior
       |
       v
@@ -96,6 +98,23 @@ Incoming ticket
 The engine is entirely rules-based and deterministic. The system prompt governs non-deterministic LLM behavior. The knowledge base is loaded into ChromaDB for semantic retrieval. These three layers are intentionally separate.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the full component map and [HOW-IT-WORKS.md](HOW-IT-WORKS.md) for how each decision is made.
+
+---
+
+## Run modes
+
+| Mode | Requires | Cost | Output |
+|---|---|---|
+| Mock | Nothing | Free | Deterministic pre-written responses |
+| LLM | `ANTHROPIC_API_KEY` in `.env` | API credits | Real Claude responses |
+
+```bash
+# Mock mode (default - no API key needed)
+python run_agent.py --demo
+
+# LLM mode (add key to .env first)
+python run_agent.py --message "I was charged but didn't receive my coins"
+```
 
 ---
 
@@ -122,7 +141,6 @@ Out of scope at Tier 1: ban enforcement, fraud investigation, legal and GDPR res
 | No account data access | Works only on player-provided text. Cannot verify purchases or account history. |
 | No session memory | Each ticket is stateless. Prior contact history is passed in as a parameter. |
 | Keyword-based classification | Unusual phrasing reduces accuracy. RAG retrieval partially compensates. |
-| No live LLM response loop | System prompt and RAG are defined. The integration call wiring them into a running agent is not implemented. |
 | No incident detection | Cannot detect multiple players reporting the same issue across sessions. |
 | Prototype system prompt | Not red-teamed at production volume. |
 
@@ -140,10 +158,6 @@ pytest tests/ -v
 
 ```bash
 make eval
-# or manually:
-python evaluation/scripts/fetch_tickets.py
-python evaluation/scripts/evaluate_tickets.py
-python evaluation/scripts/generate_report.py
 ```
 
 ---

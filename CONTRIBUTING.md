@@ -28,6 +28,7 @@ This project is designed to be domain-adaptable. The core engine, decision logic
 - The evaluation pipeline structure (`evaluation/scripts/`)
 - The multilingual handler (`multilingual/`)
 - The QA framework and scoring templates (`qa/`)
+- `run_agent.py` and `llm_client.py`
 
 ### Steps to adapt
 
@@ -36,7 +37,7 @@ This project is designed to be domain-adaptable. The core engine, decision logic
 3. Update `system-prompt.md` with your company's rules
 4. Update intent signals in `engine/classifier.py` for your domain vocabulary
 5. Run `python rag/kb_sync.py` to load your knowledge base into the vector store
-6. Run `python example_run.py` to test with example tickets
+6. Run `python run_agent.py --demo` to test with example tickets
 7. Update `evaluation/scripts/fetch_tickets.py` with your ticket patterns
 8. Run the full evaluation pipeline to measure performance
 
@@ -56,19 +57,9 @@ The gap between a working local prototype and a live production system is real. 
 
 ### Reporting Issues
 
-If you spot an error, gap, or improvement opportunity in any document:
-
 1. Open an Issue on GitHub
 2. Describe the problem clearly
 3. Suggest the correction or improvement if you have one
-
-### Suggesting New Content
-
-If you think a document is missing that would improve the project:
-
-1. Open an Issue with the label "enhancement"
-2. Describe what the document would cover and why it is needed
-3. If you want to write it yourself, mention that in the issue
 
 ### Submitting Changes
 
@@ -81,8 +72,6 @@ If you think a document is missing that would improve the project:
 
 ## Content Standards
 
-All contributions should follow these standards:
-
 - **No real company data** - all examples must be fictional
 - **No player data** - all sample conversations use fictional player names and IDs
 - **Consistent format** - follow the structure of existing documents
@@ -91,17 +80,8 @@ All contributions should follow these standards:
 
 ---
 
-## Areas Where Contributions Are Most Welcome
-
-- Additional sample conversations covering edge cases
-- Knowledge base expansions for new ticket types
-- Improvements to the QA framework based on real-world experience
-- Multilingual adaptations of existing documents
-- Adaptations of the system for non-gaming support domains
-- Feedback from people working in player care or customer support operations
-
----
-
 ## Contact
 
 For questions or discussions, connect via [LinkedIn](https://www.linkedin.com/in/alexandros-alexakis/).
+
+Repository: [github.com/alexandros-alexakis/ai-customer-support-agent](https://github.com/alexandros-alexakis/ai-customer-support-agent)
