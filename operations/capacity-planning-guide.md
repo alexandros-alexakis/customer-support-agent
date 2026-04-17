@@ -51,8 +51,8 @@ Gaming support ticket volumes follow predictable patterns:
 | Horizon | Purpose | Owner |
 |---|---|---|
 | Daily | Intraday staffing adjustments | Team Lead |
-| Weekly | Schedule planning for next week | Vendor Manager |
-| Monthly | Headcount review and BPO coordination | Vendor Manager / L&D Lead |
+| Weekly | Schedule planning for next week | Operations Manager |
+| Monthly | Headcount review and BPO coordination | Operations Manager / QA Lead |
 | Quarterly | Strategic headcount and hiring plan | Management |
 
 ---

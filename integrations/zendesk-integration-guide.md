@@ -73,7 +73,7 @@ Create a `.env` file in the project root. Never commit this file.
 ```bash
 # .env
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
-ZENDESK_SUBDOMAIN=yourcompany          # e.g. scorewarrior (not the full URL)
+ZENDESK_SUBDOMAIN=yourcompany          # your Zendesk subdomain (not the full URL)
 ZENDESK_EMAIL=support@yourcompany.com  # Admin email
 ZENDESK_API_TOKEN=your_zendesk_api_token
 WEBHOOK_SECRET=generate_a_random_string_here

@@ -183,7 +183,7 @@ QA checklist reviewed against the prohibited actions list in system-prompt.md. E
 |---|---|---|
 | QA ticket sampling (10%) | Weekly | QA Reviewer |
 | Escalation accuracy audit | Weekly | Team Lead |
-| CSAT by complexity band | Weekly | L&D Lead |
-| Consistency testing | Monthly | L&D Lead |
+| CSAT by complexity band | Weekly | QA Lead |
+| Consistency testing | Monthly | QA Lead |
 | Incident detection review | Post-incident | Team Lead |
-| Full evaluation review | Monthly | Vendor Manager |
+| Full evaluation review | Monthly | Operations Manager |

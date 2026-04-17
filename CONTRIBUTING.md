@@ -82,6 +82,4 @@ The gap between a working local prototype and a live production system is real. 
 
 ## Contact
 
-For questions or discussions, connect via [LinkedIn](https://www.linkedin.com/in/alexandros-alexakis/).
-
-Repository: [github.com/alexandros-alexakis/ai-customer-support-agent](https://github.com/alexandros-alexakis/ai-customer-support-agent)
+Open an issue on GitHub for questions or discussions.

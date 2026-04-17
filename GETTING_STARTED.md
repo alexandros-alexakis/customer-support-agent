@@ -21,8 +21,8 @@ python --version
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/alexandros-alexakis/customer-support-agent.git
-cd customer-support-agent
+git clone https://github.com/your-username/ai-customer-support-agent.git
+cd ai-customer-support-agent
 ```
 
 **2. Install dependencies**

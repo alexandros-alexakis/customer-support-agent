@@ -1,14 +1,12 @@
 # Player Care AI - Support System Design
 
-![Project Banner](banner%20(1).png)
+![Project Banner](banner.png)
 
 ## What this is
 
 A structured prototype for a Tier 1 customer support assistant, designed for gaming player care operations.
 
 This project documents the design logic, decision rules, knowledge base, escalation framework, and evaluation criteria for a prompt-driven AI support assistant built on Claude (Anthropic). It includes a working Python classification engine for ticket triage.
-
-Built by **Alexandros Alexakis**, Vendor Manager & L&D Lead at Scorewarrior.
 
 ---
 
@@ -49,7 +47,7 @@ This is a **policy-driven support assistant prototype**. The assistant responds 
 ## Quickstart
 
 ```bash
-git clone https://github.com/alexandros-alexakis/ai-customer-support-agent.git
+git clone https://github.com/your-username/ai-customer-support-agent.git
 cd ai-customer-support-agent
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
@@ -171,15 +169,6 @@ make eval
 - CSAT by ticket complexity band
 
 See [evaluation-criteria.md](evaluation-criteria.md) for full metric definitions and [evaluation/failure-analysis.md](evaluation/failure-analysis.md) for known failure modes.
-
----
-
-## Author
-
-**Alexandros Alexakis**
-Vendor Manager & L&D Lead | Player Care
-Scorewarrior, Limassol, Cyprus
-[LinkedIn](https://www.linkedin.com/in/alexandros-alexakis/)
 
 ---
 

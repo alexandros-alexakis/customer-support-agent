@@ -8,7 +8,7 @@ Get from clone to a running agent in under 5 minutes.
 
 **macOS / Linux:**
 ```bash
-git clone https://github.com/alexandros-alexakis/ai-customer-support-agent.git
+git clone https://github.com/your-username/ai-customer-support-agent.git
 cd ai-customer-support-agent
 bash setup.sh
 source venv/bin/activate
@@ -17,7 +17,7 @@ python run_agent.py --demo
 
 **Windows (Command Prompt):**
 ```
-git clone https://github.com/alexandros-alexakis/ai-customer-support-agent.git
+git clone https://github.com/your-username/ai-customer-support-agent.git
 cd ai-customer-support-agent
 setup.bat
 venv\Scripts\activate
