@@ -12,6 +12,21 @@
 
 ---
 
+## Part of a two-repo toolkit
+
+This repo handles the **intake layer**: triage, escalation, routing, and response strategy.
+
+The companion repo handles **what comes after**: scoring interactions, analysing CSAT, and generating coaching output.
+
+| Repo | What it does |
+|---|---|
+| [ai-customer-support-agent](https://github.com/alexandros-alexakis/ai-customer-support-agent) (this repo) | Detects urgency, identifies VIP players, routes to the right team, generates response strategy |
+| [ai-customer-support-qa](https://github.com/alexandros-alexakis/ai-customer-support-qa) | Scores interactions, analyses low CSAT, assigns responsibility, generates coaching notes |
+
+The agent produces the interaction. The QA system evaluates it.
+
+---
+
 ## What this is
 
 A working prototype for a Tier 1 player support assistant in a gaming environment.
@@ -22,6 +37,7 @@ It includes:
 - A rules-based triage engine that runs without an API key
 - A knowledge base covering common player issues, refund policies, and escalation rules
 - A system prompt that governs how the AI responds when Claude is connected
+- A feedback loop that learns from agent replies and builds toward KB updates over time
 - Evaluation criteria, QA thinking, and a Zendesk integration guide
 
 Built by a support operations professional with a background in player care and vendor management.
@@ -55,6 +71,7 @@ This system handles the intake layer:
 | Routes to the right team without manual reading | Account compromise -> Trust & Safety, not billing |
 | Tells the agent what to collect before they ask | Payment issue -> collect transaction ID, platform, purchase date |
 | Suggests a response tone and opening | Legal threat -> calm, formal, no engagement with the threat |
+| Escalates instead of guessing | No KB match found -> ticket goes to a human, no hallucinated answer |
 
 The agent opens the ticket and already knows: urgency, team, what to ask, and how to open. That is the operational value.
 
@@ -62,7 +79,7 @@ The agent opens the ticket and already knows: urgency, team, what to ask, and ho
 
 ## Human-in-the-loop review
 
-This section matters. Good AI support design is not about maximising automation. It is about knowing exactly where automation helps and where it causes harm.
+Good AI support design is not about maximising automation. It is about knowing exactly where automation helps and where it causes harm.
 
 ### What the AI can handle without human review
 
@@ -101,7 +118,7 @@ The AI does not send messages to players. It prepares a recommendation: triage r
 
 ## Real support scenarios this system handles
 
-See [CASE-STUDIES.md](CASE-STUDIES.md) for full operational walkthroughs. Summary:
+See [docs/operations/case-studies.md](docs/operations/case-studies.md) for full operational walkthroughs.
 
 | Scenario | What the system does |
 |---|---|
@@ -118,24 +135,34 @@ See [CASE-STUDIES.md](CASE-STUDIES.md) for full operational walkthroughs. Summar
 
 ## Documentation
 
-| Guide | What it covers |
-|---|---|
-| [QUICKSTART.md](QUICKSTART.md) | Clone to first run in 5 minutes |
-| [SETUP.md](SETUP.md) | Full installation: venv, dependencies, validation |
-| [CASE-STUDIES.md](CASE-STUDIES.md) | 8 real support scenarios with full operational reasoning |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | How the components connect and what each one does |
-| [HOW-IT-WORKS.md](HOW-IT-WORKS.md) | How every decision is made, operationally explained |
-| [EXAMPLES.md](EXAMPLES.md) | Real engine outputs for specific player messages |
-| [CONFIGURATION.md](CONFIGURATION.md) | Environment variables and provider setup |
-| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Common failures and how to fix them |
-| [EXTENDING.md](EXTENDING.md) | How to add issue types, rules, or knowledge base content |
-| [LIMITATIONS.md](LIMITATIONS.md) | What is prototype-only, mocked, or missing |
-| [PRODUCTIONIZATION.md](PRODUCTIONIZATION.md) | What it would take to deploy this in a real environment |
-| [REPOSITORY-MAP.md](REPOSITORY-MAP.md) | Every file explained in one place |
-| [VALIDATION-CHECKLIST.md](VALIDATION-CHECKLIST.md) | Confirm the setup is working |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | How to adapt this for your own company or context |
-| [GETTING_STARTED.md](GETTING_STARTED.md) | All runnable commands with expected output |
-| [integrations/zendesk-integration-guide.md](integrations/zendesk-integration-guide.md) | Zendesk webhook setup |
+**Getting started**
+- [Quickstart](docs/setup/quickstart.md)
+- [Setup](docs/setup/setup.md)
+- [Configuration](docs/setup/configuration.md)
+- [Troubleshooting](docs/setup/troubleshooting.md)
+
+**Understanding the system**
+- [How it works](docs/guides/how-it-works.md)
+- [Architecture](docs/guides/architecture.md)
+- [Extending](docs/guides/extending.md)
+
+**Operations and cases**
+- [Case studies](docs/operations/case-studies.md)
+- [Interaction flow](docs/operations/interaction-flow.md)
+- [Tone guide](docs/operations/tone-guide.md)
+
+**Learning loop**
+- [How the learning loop works](docs/learning-loop/overview.md)
+- [KB maintenance guide](docs/learning-loop/kb-maintenance.md)
+
+**Risks and limits**
+- [Limitations](docs/risk/limitations.md)
+- [Productionization roadmap](docs/risk/productionization.md)
+- [Risk register](docs/risk/risk-register.md)
+
+**Contributing**
+- [Contributing](docs/guides/contributing.md)
+- [Roadmap](docs/roadmap/roadmap.md)
 
 ---
 
@@ -157,7 +184,7 @@ source venv/bin/activate
 make agent-demo
 ```
 
-No API key needed for the demo. See [QUICKSTART.md](QUICKSTART.md) for expected output.
+No API key needed for the demo. See [docs/setup/quickstart.md](docs/setup/quickstart.md) for expected output.
 
 ---
 
@@ -173,6 +200,9 @@ Detect urgency, intent, and tone          # Is this angry? Threatening? A paymen
 Identify VIP status and contact history   # Is this a VIP? Is this their third contact on the same problem?
       |
       v
+Check knowledge base for a match          # Does the KB cover this? If not, escalate. Do not guess.
+      |
+      v
 Assign priority level and SLA             # P1 = 30 min. P5 = 72 hours. Based on issue + signals.
       |
       v
@@ -186,11 +216,12 @@ Assemble prompt for Claude (if connected) # System prompt + knowledge base + str
       |
       v
 Human agent reviews triage result         # Before anything reaches the player
+      |
+      v
+Interaction evaluated by QA system        # See ai-customer-support-qa
 ```
 
 The triage logic is entirely rules-based and runs without an API key. Claude is only involved in drafting the player-facing response. Those are intentionally separate.
-
-See [ARCHITECTURE.md](ARCHITECTURE.md) for the full breakdown and [HOW-IT-WORKS.md](HOW-IT-WORKS.md) for the operational explanation.
 
 ---
 
@@ -236,7 +267,7 @@ Not in scope at Tier 1: ban enforcement, fraud investigation, legal and GDPR res
 | No cross-ticket incident detection | Cannot identify when many players are reporting the same issue at the same time. |
 | System prompt not red-teamed | Tested on representative cases, not adversarial volume. |
 
-See [LIMITATIONS.md](LIMITATIONS.md) for the complete list.
+See [docs/risk/limitations.md](docs/risk/limitations.md) for the complete list.
 
 ---
 
@@ -278,16 +309,29 @@ See [evaluation-criteria.md](evaluation-criteria.md) for metric definitions and 
 
 ---
 
+## Reporting issues
+
+Use the issue templates in this repo:
+
+- **Bug** - the engine does something it should not
+- **KB gap** - the knowledge base is missing a scenario
+- **Escalation misfire** - a ticket routed to the wrong team
+- **Scope creep** - the system answered something it should have deflected
+- **Feature request** - something new to add
+- **Improvement** - something that works but could work better
+
+---
+
 ## Author
 
-**Alexandros Alexakis**  
-Vendor Manager and L&D Lead | Player Care  
+**Alexandros Alexakis**
+Vendor Manager and L&D Lead | Player Care
 [LinkedIn](https://www.linkedin.com/in/alexandros-alexakis/)
 
 ---
 
 ## Status
 
-Prototype. Functional triage engine with unit tests, semantic knowledge base, gap tracking, feedback loop, multilingual support, evaluation pipeline, and Zendesk integration guide.
+Prototype. Functional triage engine with unit tests, semantic knowledge base, learning loop scaffolding, gap tracking, feedback loop, multilingual support, evaluation pipeline, and Zendesk integration guide.
 
-See [PRODUCTIONIZATION.md](PRODUCTIONIZATION.md) for what a real deployment would require.
+See [docs/risk/productionization.md](docs/risk/productionization.md) for what a real deployment would require.
