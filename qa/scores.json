@@ -1,0 +1,21 @@
+[
+  {
+    "id": "3751e634",
+    "timestamp": "2026-04-17T13:00:25.427964+00:00",
+    "player_message": "I need help",
+    "agent_response": "Sure, how can I help?",
+    "intent": "unknown",
+    "scores": {
+      "tone": 15,
+      "accuracy": 22,
+      "resolution": 18,
+      "clarity": 11,
+      "escalation": 7
+    },
+    "total": 73,
+    "band": "Needs Improvement",
+    "fatal_error": false,
+    "fatal_reason": null,
+    "is_mock": true
+  }
+]

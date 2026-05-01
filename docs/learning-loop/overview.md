@@ -17,19 +17,13 @@ The learning loop addresses both.
 Before generating any response, the system runs two checks:
 
 1. **Classification confidence.** If intent cannot be classified above 0.65, ticket is flagged `requires_human` immediately.
-2. **KB retrieval confidence.** If the top KB retrieval result falls below the similarity threshold (default 0.70), the system escalates rather than generating a response from general knowledge.
+2. **KB retrieval confidence.** If the top KB retrieval result falls below the similarity threshold (hardcoded at 0.4 in `rag/retriever.py`), the system escalates rather than generating a response from general knowledge.
 
 If the system does not know the answer, it says so and passes the ticket to a human. It does not guess.
 
 In gaming support, a hallucinated answer is often worse than no answer. The cost of over-escalating is low. The cost of hallucinating is high: false expectations, an agent who has to fix what the AI broke, and a CSAT hit.
 
-Configuration in `.env`:
-```
-CLASSIFICATION_CONFIDENCE_THRESHOLD=0.65
-RAG_SIMILARITY_THRESHOLD=0.70
-```
-
-These are starting points. Calibrate against real tickets before going live.
+Both thresholds are hardcoded in the current prototype. Calibrate these values against real tickets before going live.
 
 ---
 
@@ -50,12 +44,7 @@ The cycle:
 
 **This is not automatic KB updating.** Every candidate goes through human review before anything is added. One agent reply might be inconsistent with policy. The approval step is where quality control happens.
 
-Default promotion threshold: 3 consistent resolutions before surfacing for review.
-
-Configuration in `.env`:
-```
-LEARNING_LOOP_PROMOTION_THRESHOLD=3
-```
+Default promotion threshold: 3 consistent resolutions before surfacing for review. This is hardcoded in `feedback/incident_detector.py` in the current prototype.
 
 ---
 

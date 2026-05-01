@@ -21,7 +21,7 @@ python --version
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/your-username/ai-customer-support-agent.git
+git clone https://github.com/alexandros-alexakis/ai-customer-support-agent.git
 cd ai-customer-support-agent
 ```
 
@@ -205,7 +205,7 @@ gunicorn integrations.zendesk_webhook:app --bind 0.0.0.0:8000 --workers 2
 | `onboarding/` | Agent training and certification |
 | `sample-conversations/` | Illustrative examples (not test evidence) |
 | `system-prompt.md` | Core assistant behavior rules |
-| `interaction-flow.md` | Step-by-step decision flow |
+| `docs/operations/interaction-flow.md` | Step-by-step decision flow |
 | `evaluation-criteria.md` | How performance is measured |
 | `evaluation/failure-analysis.md` | Known failure modes and mitigations |
 | `CONTRIBUTING.md` | How to adapt this for your own company |

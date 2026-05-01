@@ -18,14 +18,14 @@ Full installation and configuration instructions for all operating systems.
 
 **macOS / Linux:**
 ```bash
-git clone https://github.com/your-username/ai-customer-support-agent.git
+git clone https://github.com/alexandros-alexakis/ai-customer-support-agent.git
 cd ai-customer-support-agent
 bash setup.sh
 ```
 
 **Windows (Command Prompt, not PowerShell):**
 ```
-git clone https://github.com/your-username/ai-customer-support-agent.git
+git clone https://github.com/alexandros-alexakis/ai-customer-support-agent.git
 cd ai-customer-support-agent
 setup.bat
 ```
@@ -51,7 +51,7 @@ The setup scripts handle everything and print clear next steps when done.
 ### Step 1: Clone the repository
 
 ```bash
-git clone https://github.com/your-username/ai-customer-support-agent.git
+git clone https://github.com/alexandros-alexakis/ai-customer-support-agent.git
 cd ai-customer-support-agent
 ```
 

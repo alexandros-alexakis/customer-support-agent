@@ -14,7 +14,7 @@ When something goes wrong or needs changing, this table tells you exactly which 
 | Agent routes to the wrong team | Incorrect routing table entry | `engine/escalation.py` - update `ROUTING_TABLE` | Re-run evaluation pipeline |
 | Agent gives wrong information to player | KB content is missing or incorrect | Relevant file in `knowledge-base/` | Re-run `python rag/kb_sync.py` |
 | Agent makes an unauthorized promise | System prompt prohibition missing | `system-prompt.md` - add to PROHIBITED ACTIONS | Review all 30 test cases manually |
-| Agent uses the wrong tone | Tone rules too loose | `system-prompt.md` - tighten tone section | Check `tone-guide.md` for consistency |
+| Agent uses the wrong tone | Tone rules too loose | `system-prompt.md` - tighten tone section | Check `docs/operations/tone-guide.md` for consistency |
 | Priority score seems wrong | Priority rule missing or miscalibrated | `engine/prioritizer.py` - update priority rules | Run `tests/test_prioritizer.py` |
 | Mock response is unhelpful or wrong | Mock dictionary entry | `llm_client.py` - update `MOCK_RESPONSES` for that intent | Run `python run_agent.py --demo` to verify |
 | RAG retrieves irrelevant content | KB section is poorly written or misplaced | Relevant file in `knowledge-base/` | Re-run `python rag/kb_sync.py` and test with `python rag/example_rag.py` |

@@ -123,7 +123,7 @@ Steps 8-11 are implemented as standalone modules but are not wired into a live a
 | `integrations/zendesk_client.py` | Zendesk API calls (fetch ticket, update ticket, get user) |
 | `system-prompt.md` | The LLM behavior contract: scope, rules, prohibited actions |
 | `knowledge-base/decision-table.md` | Operational decision logic by issue type |
-| `interaction-flow.md` | Step-by-step decision flow for any ticket |
+| `docs/operations/interaction-flow.md` | Step-by-step decision flow for any ticket |
 | `evaluation/test-cases.md` | 30 test scenarios covering edge cases |
 | `evaluation/failure-analysis.md` | Known failure modes with causes and mitigations |
 | `evaluation/scripts/` | Ticket generator, evaluator, report generator |

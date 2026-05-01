@@ -24,10 +24,10 @@ Every file and folder in the repository, what it does, and where to find things.
 | `VALIDATION-CHECKLIST.md` | Checklist to confirm setup is working correctly |
 | `CHANGELOG.md` | Version history |
 | `roadmap.md` | Planned improvements |
-| `interaction-flow.md` | Step-by-step decision flow for any ticket |
+| `docs/operations/interaction-flow.md` | Step-by-step decision flow for any ticket |
 | `evaluation-criteria.md` | How performance is measured, metrics with assessment methods |
 | `system-prompt.md` | The LLM behavior contract: scope, rules, prohibited actions |
-| `tone-guide.md` | Communication standards with good/bad examples |
+| `docs/operations/tone-guide.md` | Communication standards with good/bad examples |
 | `agent-limitations.md` | What the AI agent can and cannot do |
 | `agent-versioning.md` | How to track and roll back prompt and KB changes |
 | `prompt-engineering-notes.md` | Design decisions behind the system prompt |

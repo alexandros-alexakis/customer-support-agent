@@ -86,7 +86,7 @@ Feedback records do not automatically update the system. They are inputs to a hu
 | hallucinated_policy | Add the correct policy explicitly to the KB. Tighten the system prompt prohibition. |
 | wrong_escalation | Update the decision table escalation rule. Add a test case to the test suite. |
 | incorrect_information | Update the relevant KB file. Re-sync ChromaDB. |
-| tone_failure | Update tone-guide.md. Add to QA calibration session. |
+| tone_failure | Update `docs/operations/tone-guide.md`. Add to QA calibration session. |
 | premature_closure | Review system prompt closure rules. |
 
 This is intentional. Automatic prompt updates based on feedback without human review create a different class of risk. The loop is: detect -> record -> human reviews -> deliberate update.

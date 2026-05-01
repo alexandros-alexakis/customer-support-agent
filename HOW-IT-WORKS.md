@@ -199,7 +199,7 @@ The system stops Tier 1 resolution attempts and escalates when any of these is t
 3. Confidence is too low to classify the issue type
 4. The issue type is not in Tier 1 scope (escalation is the only action)
 
-The system does not keep trying indefinitely. The interaction flow in `interaction-flow.md` defines the exact stopping points.
+The system does not keep trying indefinitely. The interaction flow in `docs/operations/interaction-flow.md` defines the exact stopping points.
 
 ---
 
