@@ -1,3 +1,3 @@
 # Prompt Engineering Notes
 
-> **Moved.** This file is preserved for reference. The system prompt is in [system-prompt.md](../system-prompt.md).
+> **Deprecated.** See [system-prompt.md](../system-prompt.md) and [docs/guides/](../docs/guides/).

@@ -1,3 +1,3 @@
-# Agent Versioning Guide
+# Agent Versioning
 
-> **Moved.** This file is preserved for reference. Version control is handled via git commit history and CHANGELOG.md.
+> **Deprecated.** See [docs/risk/](../docs/risk/).
