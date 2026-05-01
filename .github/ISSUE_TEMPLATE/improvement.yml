@@ -1,0 +1,39 @@
+name: Improvement
+description: Something that works but could work better.
+labels: ["improvement"]
+body:
+  - type: markdown
+    attributes:
+      value: Lower priority than bugs. These are quality-of-life or accuracy improvements.
+  - type: textarea
+    id: what
+    attributes:
+      label: What could be improved?
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: How does it currently behave?
+    validations:
+      required: true
+  - type: textarea
+    id: better
+    attributes:
+      label: How should it behave?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - classification accuracy
+        - escalation logic
+        - response quality
+        - KB coverage
+        - evaluation
+        - documentation
+        - other
+    validations:
+      required: true

@@ -1,0 +1,43 @@
+name: KB Gap
+description: The knowledge base does not cover a scenario, so the AI gave a weak or wrong response.
+labels: ["kb-gap"]
+body:
+  - type: markdown
+    attributes:
+      value: This is a content problem, not a code problem. The fix is a KB update, not a code change.
+  - type: textarea
+    id: player-message
+    attributes:
+      label: What did the player ask?
+      description: The message or question the system could not answer well.
+    validations:
+      required: true
+  - type: textarea
+    id: system-response
+    attributes:
+      label: What did the system do?
+      description: Did it escalate, hallucinate, give a wrong answer, or fail to retrieve anything relevant?
+    validations:
+      required: true
+  - type: textarea
+    id: correct-answer
+    attributes:
+      label: What is the correct answer or policy?
+      description: If you know what the right response should be, include it here.
+    validations:
+      required: false
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Topic area
+      options:
+        - payments and purchases
+        - refunds
+        - account access
+        - lost progress
+        - ban appeals
+        - VIP handling
+        - technical issues
+        - other
+    validations:
+      required: true

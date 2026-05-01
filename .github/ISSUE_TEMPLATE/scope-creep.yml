@@ -1,0 +1,41 @@
+name: Scope Creep
+description: Players are asking things outside T1 scope and the system is attempting to answer instead of deflecting.
+labels: ["scope-creep"]
+body:
+  - type: markdown
+    attributes:
+      value: The fix is usually a prompt or rule change, not a KB update.
+  - type: textarea
+    id: player-message
+    attributes:
+      label: Player message
+      description: What did the player ask that is outside T1 scope?
+    validations:
+      required: true
+  - type: textarea
+    id: system-response
+    attributes:
+      label: What did the system do?
+      description: Did it attempt to answer, or did it correctly deflect?
+    validations:
+      required: true
+  - type: textarea
+    id: correct-behaviour
+    attributes:
+      label: What should it have done?
+      description: Deflect and escalate? Route to a specific team? Acknowledge and hold?
+    validations:
+      required: true
+  - type: dropdown
+    id: scope-area
+    attributes:
+      label: What scope boundary was crossed?
+      options:
+        - ban enforcement
+        - fraud investigation
+        - legal or GDPR
+        - refund approval
+        - account data disclosure
+        - other
+    validations:
+      required: true

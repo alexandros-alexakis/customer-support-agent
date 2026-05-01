@@ -1,0 +1,41 @@
+name: Escalation Misfire
+description: The right intent was detected but the ticket went to the wrong team, or should have escalated and did not.
+labels: ["escalation-misfire"]
+body:
+  - type: markdown
+    attributes:
+      value: This is a logic problem in the escalation rules, not a KB content problem.
+  - type: textarea
+    id: player-message
+    attributes:
+      label: Player message
+    validations:
+      required: true
+  - type: input
+    id: routed-to
+    attributes:
+      label: Where did it route?
+      placeholder: e.g. billing
+    validations:
+      required: true
+  - type: input
+    id: should-route-to
+    attributes:
+      label: Where should it have routed?
+      placeholder: e.g. trust_and_safety
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is that the correct routing?
+      description: Explain the support logic behind the correct decision.
+    validations:
+      required: true
+  - type: textarea
+    id: flags
+    attributes:
+      label: What flags or signals were present?
+      description: e.g. VIP flag, contact count, tone, legal threat
+    validations:
+      required: false
