@@ -124,8 +124,6 @@ The AI does not send messages to players. It prepares a recommendation: triage r
 
 ## Real support scenarios this system handles
 
-See [CASE-STUDIES.md](CASE-STUDIES.md) for full operational walkthroughs.
-
 | Scenario | What the system does |
 |---|---|
 | Player was charged but items never arrived | Detects payment issue, routes to billing, collects transaction ID |
@@ -142,18 +140,16 @@ See [CASE-STUDIES.md](CASE-STUDIES.md) for full operational walkthroughs.
 ## Documentation
 
 **Getting started**
-- [Quickstart](QUICKSTART.md)
-- [Setup](SETUP.md)
-- [Configuration](CONFIGURATION.md)
-- [Troubleshooting](TROUBLESHOOTING.md)
+- [Quickstart](docs/setup/quickstart.md)
+- [Setup](docs/setup/setup.md)
+- [Configuration](docs/setup/configuration.md)
+- [Troubleshooting](docs/setup/troubleshooting.md)
 
 **Understanding the system**
 - [How it works](docs/guides/how-it-works.md)
 - [Architecture](docs/guides/architecture.md)
-- [Extending](EXTENDING.md)
 
-**Operations and cases**
-- [Case studies](CASE-STUDIES.md)
+**Operations**
 - [Interaction flow](docs/operations/interaction-flow.md)
 - [Tone guide](docs/operations/tone-guide.md)
 
@@ -190,7 +186,7 @@ source venv/bin/activate
 make agent-demo
 ```
 
-No API key needed for the demo. See [QUICKSTART.md](QUICKSTART.md) for expected output.
+No API key needed for the demo. See [docs/setup/quickstart.md](docs/setup/quickstart.md) for expected output.
 
 ---
 
@@ -311,7 +307,7 @@ make eval
 - Hallucination avoidance
 - CSAT segmented by ticket complexity band
 
-See [evaluation-criteria.md](evaluation-criteria.md) for metric definitions and [evaluation/failure-analysis.md](evaluation/failure-analysis.md) for known failure modes.
+See [evaluation/](evaluation/) for metric definitions and failure analysis.
 
 ---
 
