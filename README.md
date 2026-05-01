@@ -118,7 +118,7 @@ The AI does not send messages to players. It prepares a recommendation: triage r
 
 ## Real support scenarios this system handles
 
-See [docs/operations/case-studies.md](docs/operations/case-studies.md) for full operational walkthroughs.
+See [CASE-STUDIES.md](CASE-STUDIES.md) for full operational walkthroughs.
 
 | Scenario | What the system does |
 |---|---|
@@ -136,18 +136,18 @@ See [docs/operations/case-studies.md](docs/operations/case-studies.md) for full 
 ## Documentation
 
 **Getting started**
-- [Quickstart](docs/setup/quickstart.md)
-- [Setup](docs/setup/setup.md)
-- [Configuration](docs/setup/configuration.md)
-- [Troubleshooting](docs/setup/troubleshooting.md)
+- [Quickstart](QUICKSTART.md)
+- [Setup](SETUP.md)
+- [Configuration](CONFIGURATION.md)
+- [Troubleshooting](TROUBLESHOOTING.md)
 
 **Understanding the system**
 - [How it works](docs/guides/how-it-works.md)
 - [Architecture](docs/guides/architecture.md)
-- [Extending](docs/guides/extending.md)
+- [Extending](EXTENDING.md)
 
 **Operations and cases**
-- [Case studies](docs/operations/case-studies.md)
+- [Case studies](CASE-STUDIES.md)
 - [Interaction flow](docs/operations/interaction-flow.md)
 - [Tone guide](docs/operations/tone-guide.md)
 
@@ -161,7 +161,7 @@ See [docs/operations/case-studies.md](docs/operations/case-studies.md) for full 
 - [Risk register](docs/risk/risk-register.md)
 
 **Contributing**
-- [Contributing](docs/guides/contributing.md)
+- [Contributing](CONTRIBUTING.md)
 - [Roadmap](docs/roadmap/roadmap.md)
 
 ---
@@ -184,7 +184,7 @@ source venv/bin/activate
 make agent-demo
 ```
 
-No API key needed for the demo. See [docs/setup/quickstart.md](docs/setup/quickstart.md) for expected output.
+No API key needed for the demo. See [QUICKSTART.md](QUICKSTART.md) for expected output.
 
 ---
 
