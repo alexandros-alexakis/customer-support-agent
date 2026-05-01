@@ -37,8 +37,14 @@ It includes:
 - A rules-based triage engine that runs without an API key
 - A knowledge base covering common player issues, refund policies, and escalation rules
 - A system prompt that governs how the AI responds when Claude is connected
+- Session memory that persists conversation history per player across turns
+- Player account context injected into every prompt (spend, VIP tier, device, tenure)
+- Multilingual support: detects player language and responds natively in 5 languages
+- Incident detection that groups tickets by intent and flags potential outages in real time
+- Automated QA scoring of agent responses against a 100-point rubric
+- Coaching reports, training scenario generators, shift handover reports, and team performance dashboards
 - A feedback loop that learns from agent replies and builds toward KB updates over time
-- Evaluation criteria, QA thinking, and a Zendesk integration guide
+- Zendesk and Helpshift webhook integrations
 
 Built by a support operations professional with a background in player care and vendor management.
 
@@ -261,11 +267,11 @@ Not in scope at Tier 1: ban enforcement, fraud investigation, legal and GDPR res
 
 | Limitation | What this means in practice |
 |---|---|
-| No account data access | The system reads the player's message. It cannot check purchase history, account status, or prior contact records. |
-| No session memory | Each ticket is processed independently. Prior contact count is passed in manually. |
+| No live account data access | The system reads the player's message. The account context layer uses mock data — a real backend integration point is defined but not yet wired. |
 | Keyword-based intent detection | Unusual phrasing reduces accuracy. The semantic search layer partially compensates. |
-| No cross-ticket incident detection | Cannot identify when many players are reporting the same issue at the same time. |
+| English-biased classifier | Intent signals use English keywords. Non-English input is translated at the response layer but classification remains English-first. |
 | System prompt not red-teamed | Tested on representative cases, not adversarial volume. |
+| No live metrics backend | QA scores and dashboards are file-based. Production deployment would require a proper metrics store. |
 
 See [docs/risk/limitations.md](docs/risk/limitations.md) for the complete list.
 
@@ -332,6 +338,6 @@ Vendor Manager and L&D Lead | Player Care
 
 ## Status
 
-Prototype. Functional triage engine with unit tests, semantic knowledge base, learning loop scaffolding, gap tracking, feedback loop, multilingual support, evaluation pipeline, and Zendesk integration guide.
+Functional prototype. Triage engine with unit tests, semantic knowledge base, RAG retrieval, session memory, player account context, multilingual support across 5 languages, incident detection, automated QA scoring, coaching reports, training scenario generator, shift handover reports, team performance dashboard, evaluation pipeline, feedback loop, and Zendesk and Helpshift integrations.
 
 See [docs/risk/productionization.md](docs/risk/productionization.md) for what a real deployment would require.
