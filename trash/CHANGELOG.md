@@ -1,6 +1,6 @@
 # Changelog
 
-> **Note:** This file is preserved in trash/. The active changelog is CHANGELOG.md in the repository root.
+All notable changes to the customer support agent are documented here.
 
 ---
 
@@ -12,7 +12,10 @@
 - Onboarding folder: agent training guide, new agent checklist, certification criteria, QA scorecard
 - Knowledge base: game mechanics FAQ, technical issues FAQ, VIP player handling guide, seasonal events guide
 - Sample conversations: angry player, VIP complaint, technical issue, repeat contact, fraud suspicion
-- Tone guide, agent limitations document, prompt engineering notes, roadmap
+- Tone guide
+- Agent limitations document
+- Prompt engineering notes
+- Roadmap
 
 ### Changed
 - README updated to reflect expanded repository structure
@@ -22,11 +25,15 @@
 ## [1.1] - 2025-04
 
 ### Added
-- System prompt, knowledge base, sample conversations, evaluation criteria
+- System prompt
+- Knowledge base: payments FAQ, account access FAQ, escalation rules
+- Sample conversations: payment issue, escalation example
+- Evaluation criteria
 
 ---
 
 ## [1.0] - 2025-04
 
 ### Added
-- Initial repository setup, README
+- Initial repository setup
+- README
