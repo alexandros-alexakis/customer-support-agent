@@ -27,6 +27,9 @@ evaluation/data/
 feedback/gaps.json
 feedback/feedback.json
 
+# QA scores - generated output, not source
+qa/scores.json
+
 # IDE
 .vscode/
 .idea/

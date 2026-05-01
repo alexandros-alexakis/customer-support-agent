@@ -70,6 +70,18 @@ INTENT_SIGNALS: dict[Intent, list[str]] = {
         "quitting", "uninstalling", "done with this game", "last time",
         "never playing again", "waste of money", "deleting"
     ],
+    # Previously missing - these intents existed in the enum but had no keyword signals,
+    # meaning they could never be classified via this path.
+    Intent.GAME_MECHANIC: [
+        "how do i", "how does", "how to", "what is", "explain",
+        "mechanic", "feature", "gameplay", "game mode", "what are",
+        "rules", "tutorial", "guide", "tips"
+    ],
+    Intent.VIP_COMPLAINT: [
+        "vip", "premium", "loyal player", "been playing for years",
+        "long time player", "spent a lot", "vip member", "loyal customer",
+        "priority support", "vip status"
+    ],
 }
 
 TONE_SIGNALS: dict[Tone, list[str]] = {
